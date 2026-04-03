@@ -413,8 +413,10 @@
   }
 
   function buildTossLink(amt) {
-    let url = `supertoss://send?bank=${TOSS_BANK_CODE}&accountNo=${ACCOUNT_NO_CLEAN}`;
+    // 토스 딥링크: bank에 한글 은행명 사용
+    let url = `supertoss://send?bank=${encodeURIComponent('토스뱅크')}&accountNo=${ACCOUNT_NO_CLEAN}`;
     if (amt) url += `&amount=${amt}`;
+    url += '&origin=qr';
     return url;
   }
 

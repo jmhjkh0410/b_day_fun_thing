@@ -94,8 +94,9 @@
   }
   .edit-input:focus { border-color: #999; }
 
-  /* Add form */
-  .add-form { margin-top: 32px; padding-top: 32px; border-top: 1px dashed var(--border); }
+  /* Add form (admin only) */
+  .add-form { margin-top: 32px; padding-top: 32px; border-top: 1px dashed var(--border); display: none; }
+  .admin-mode .add-form { display: block; }
   .form-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
   .input-field {
     flex: 1 1 140px; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.85rem; font-weight: 300;
@@ -244,7 +245,7 @@
 <div class="section" id="wishlist-section">
   <div class="section-label">Wishlist</div>
   <div id="wish-container"><div class="loading">불러오는 중...</div></div>
-  <div class="add-form">
+  <div class="add-form admin-btns" id="admin-add-form">
     <div class="section-label" style="margin-bottom:14px;">위시리스트에 추가하기</div>
     <div class="form-row">
       <input type="text" id="add-name" class="input-field" placeholder="선물 이름">
@@ -287,9 +288,13 @@
     <div class="modal-field">
       <label>선물 (지분 태울 아이템)</label>
       <select id="gift-select"></select>
-      <div class="custom-gift-row" id="custom-gift-row"><input type="text" id="gift-custom" placeholder="직접 입력할 선물 이름"></div>
+      <div class="custom-gift-row" id="custom-gift-row">
+        <input type="text" id="gift-custom" placeholder="직접 입력할 선물 이름">
+        <input type="text" id="gift-custom-price" placeholder="아이템 전체 금액 (원)" inputmode="numeric" style="margin-top:8px;">
+        <div class="hint">위시리스트에 등록될 아이템 총액이에요</div>
+      </div>
     </div>
-    <div class="modal-field"><label>후원 금액 (원)</label><input type="text" id="gift-amount" placeholder="50,000" inputmode="numeric"></div>
+    <div class="modal-field"><label>내가 후원할 금액 (원)</label><input type="text" id="gift-amount" placeholder="50,000" inputmode="numeric"></div>
     <div class="modal-field"><label>관련 링크 (선택)</label><input type="url" id="gift-link" placeholder="https://..."><div class="hint">추천하고 싶은 상품 링크가 있다면 남겨주세요</div></div>
     <div class="modal-field"><label>한마디 (선택)</label><textarea id="gift-msg" placeholder="무사귀환 기원합니다!"></textarea></div>
     <button class="modal-submit" id="gift-submit">후원 등록</button>
@@ -681,10 +686,15 @@
     const amount = parseInt(raw);
     lastSubmitAmount = amount;
     let giftName, wishIdx = -1;
-    if (sel.value === '__custom__') { giftName = custom; }
+    let customItemPrice = 0;
+    if (sel.value === '__custom__') {
+      giftName = custom;
+      const cpRaw = document.getElementById('gift-custom-price').value.replace(/[^0-9]/g, '');
+      customItemPrice = cpRaw ? parseInt(cpRaw) : amount; // 아이템 총액 미입력 시 후원 금액으로
+    }
     else { wishIdx = parseInt(sel.value); giftName = wishlist[wishIdx].name; }
 
-    pendingDonation = { name, amount, gift: giftName, message: msg, link: linkVal, wishIdx };
+    pendingDonation = { name, amount, gift: giftName, message: msg, link: linkVal, wishIdx, customItemPrice };
 
     document.getElementById('gift-submit').style.display = 'none';
     document.querySelectorAll('#modal-overlay .modal-field').forEach(el => el.style.display = 'none');
@@ -696,18 +706,29 @@
     const p = pendingDonation;
     try {
       // insert donation
-      const inserted = await sbFetch('donations', 'POST', '', {
+      await sbFetch('donations', 'POST', '', {
         name: p.name, amount: p.amount, gift: p.gift, message: p.message, link: p.link
       });
 
-      // update wishlist funded
       if (p.wishIdx >= 0) {
+        // existing wishlist item: update funded
         const item = wishlist[p.wishIdx];
         const newFunded = item.funded + p.amount;
         await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, { funded: newFunded });
         if (p.link && !item.link) {
           await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, { link: p.link });
         }
+      } else {
+        // custom item: create new wishlist entry with funded = donation amount
+        await sbFetch('wishlist', 'POST', '', {
+          name: p.gift,
+          description: '',
+          price: p.customItemPrice || p.amount,
+          link: p.link || '',
+          funded: p.amount,
+          added_by: p.name,
+          sort_order: wishlist.length + 1
+        });
       }
 
       pendingDonation = null;
@@ -723,6 +744,7 @@
     document.getElementById('gift-select').selectedIndex = 0;
     document.getElementById('custom-gift-row').classList.remove('show');
     document.getElementById('gift-custom').value = '';
+    document.getElementById('gift-custom-price').value = '';
     document.getElementById('gift-amount').value = '';
     document.getElementById('gift-link').value = '';
     document.getElementById('gift-msg').value = '';
@@ -803,8 +825,8 @@
 
     try {
       await sbFetch('wishlist', 'POST', '', {
-        name, description: '후원자 제안 아이템', price: parseInt(priceRaw),
-        link: link || '', funded: 0, added_by: '익명',
+        name, description: '', price: parseInt(priceRaw),
+        link: link || '', funded: 0, added_by: '정경호',
         sort_order: wishlist.length + 1
       });
       await loadWishlist();

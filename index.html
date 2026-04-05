@@ -244,7 +244,7 @@
 
 <header>
   <h1>카카오 선물하기엔 제 취향이 없어서<br>직접 차렸습니다.</h1>
-  <p>카카오 선물하기만 30분 동안 보다가 현타와서 만들어봤습니다.<br>생일 전에 갖고 싶던 이미 사버린 밴드 굿즈, 전역 기념 유럽 여행, 기타 용품 등 이리저리 넣어봤습니다.</p>편하게 지분만 보태주십쇼.</p>
+  <p>카카오 선물하기만 30분 동안 보다가 현타와서 만들어봤습니다.<br>생일 전에 갖고 싶던 이미 사버린 밴드 굿즈, 전역 기념 유럽 여행, 기타 용품 등 이리저리 넣어봤습니다.<br>편하게 지분만 보태주십쇼.</p>
 </header>
 
 <div class="section" id="wishlist-section">
@@ -301,7 +301,7 @@
     </div>
     <div class="modal-field"><label>내가 후원할 금액 (원)</label><input type="text" id="gift-amount" placeholder="50,000" inputmode="numeric"></div>
     <div class="modal-field"><label>관련 링크 (선택)</label><input type="url" id="gift-link" placeholder="https://..."><div class="hint">추천하고 싶은 상품 링크가 있다면 남겨주세요</div></div>
-    <div class="modal-field"><label>한마디 (선택)</label><textarea id="gift-msg" placeholder="무사귀환 기원합니다!"></textarea></div>
+    <div class="modal-field"><label>한마디 (선택)</label><textarea id="gift-msg" placeholder="생일 축하해!"></textarea></div>
     <button class="modal-submit" id="gift-submit">후원 등록</button>
     <div class="pay-step" id="pay-step">
       <div id="pay-choose">
@@ -423,7 +423,6 @@
   }
 
   function buildTossLink(amt) {
-    // 토스 딥링크: bank에 한글 은행명 사용
     let url = `supertoss://send?bank=${encodeURIComponent('토스뱅크')}&accountNo=${ACCOUNT_NO_CLEAN}`;
     if (amt) url += `&amount=${amt}`;
     url += '&origin=qr';
@@ -706,7 +705,7 @@
     if (sel.value === '__custom__') {
       giftName = custom;
       const cpRaw = document.getElementById('gift-custom-price').value.replace(/[^0-9]/g, '');
-      customItemPrice = cpRaw ? parseInt(cpRaw) : amount; // 아이템 총액 미입력 시 후원 금액으로
+      customItemPrice = cpRaw ? parseInt(cpRaw) : amount;
     }
     else { wishIdx = parseInt(sel.value); giftName = wishlist[wishIdx].name; }
 
@@ -721,13 +720,11 @@
     if (!pendingDonation) return;
     const p = pendingDonation;
     try {
-      // insert donation
       await sbFetch('donations', 'POST', '', {
         name: p.name, amount: p.amount, gift: p.gift, message: p.message, link: p.link
       });
 
       if (p.wishIdx >= 0) {
-        // existing wishlist item: update funded
         const item = wishlist[p.wishIdx];
         const newFunded = item.funded + p.amount;
         await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, { funded: newFunded });
@@ -735,7 +732,6 @@
           await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, { link: p.link });
         }
       } else {
-        // custom item: create new wishlist entry with funded = donation amount
         await sbFetch('wishlist', 'POST', '', {
           name: p.gift,
           description: '',
@@ -781,7 +777,6 @@
     document.getElementById('pay-done').style.display = state === 'waiting' ? 'none' : '';
   }
 
-  // 계좌 복사 → 바로 등록
   document.getElementById('copy-acct-btn').addEventListener('click', async () => {
     await copyToClipboard(ACCOUNT_FULL);
     await commitDonation();
@@ -790,7 +785,6 @@
     showToast('계좌 복사 완료! 후원이 등록되었습니다.');
   });
 
-  // 토스/카카오 → waiting → thankyou
   let waitingAppReturn = false;
   document.getElementById('toss-btn').addEventListener('click', e => {
     e.preventDefault();
@@ -827,7 +821,7 @@
   });
 
   // ══════════════════════════════════════════
-  // Add to wishlist
+  // Add to wishlist (admin only)
   // ══════════════════════════════════════════
   document.getElementById('add-btn').addEventListener('click', async () => {
     const ni = document.getElementById('add-name');

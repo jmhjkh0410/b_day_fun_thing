@@ -73,6 +73,16 @@
   .wish-card .funded-text { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
   .wish-card .user-added { font-size: 0.7rem; color: var(--muted); margin-top: 4px; font-style: italic; }
 
+  /* Contributors */
+  .contrib-section { margin-top: 10px; }
+  .contrib-bar { display: flex; height: 4px; border-radius: 2px; overflow: hidden; gap: 2px; margin-bottom: 8px; }
+  .contrib-list { display: flex; flex-direction: column; gap: 4px; }
+  .contrib-item { display: flex; align-items: center; gap: 6px; font-size: 0.73rem; color: var(--muted); }
+  .contrib-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .contrib-name { flex-shrink: 0; }
+  .contrib-amount { color: var(--fg); font-weight: 400; }
+  .contrib-pct { color: var(--muted); margin-left: auto; }
+
   /* Admin controls */
   .admin-btns { display: none; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
   .admin-mode .admin-btns { display: flex; }
@@ -475,6 +485,31 @@
         ? `<div class="funded-bar-wrap"><div class="funded-bar" style="width:${pct}%"></div></div>
            <div class="funded-text">${fmt(item.funded)}원 / ${fmt(item.price)}원 (${pct}%)</div>` : '';
       const userTag = item.added_by ? `<div class="user-added">${esc(item.added_by)}님이 추가</div>` : '';
+
+      // contributors for this item
+      const contribs = donations.filter(d => d.gift === item.name);
+      let contribHtml = '';
+      if (contribs.length > 0) {
+        const totalContrib = contribs.reduce((s, c) => s + c.amount, 0);
+        const colors = ['#111','#555','#888','#aaa','#ccc','#ddd'];
+        const segments = contribs.map((c, ci) => {
+          const w = totalContrib > 0 ? (c.amount / totalContrib * 100) : 0;
+          return `<div style="width:${w}%;background:${colors[ci % colors.length]};height:100%;border-radius:2px;" title="${esc(c.name)} ${fmt(c.amount)}원"></div>`;
+        }).join('');
+        const names = contribs.map((c, ci) =>
+          `<div class="contrib-item">
+            <span class="contrib-dot" style="background:${colors[ci % colors.length]}"></span>
+            <span class="contrib-name">${isAdmin ? esc(c.name) : esc(maskName(c.name))}</span>
+            <span class="contrib-amount">${fmt(c.amount)}원</span>
+            <span class="contrib-pct">${Math.round(c.amount / item.price * 100)}%</span>
+          </div>`
+        ).join('');
+        contribHtml = `<div class="contrib-section">
+          <div class="contrib-bar">${segments}</div>
+          <div class="contrib-list">${names}</div>
+        </div>`;
+      }
+
       const adminHtml = `<div class="admin-btns">
         <button class="admin-btn" onclick="editWish(${i})">수정</button>
         <button class="admin-btn danger" onclick="deleteWish(${i})">삭제</button>
@@ -486,7 +521,7 @@
           <span class="price">필요 금액: <span>${fmt(item.price)}원</span></span>
           ${linkHtml}
         </div>
-        ${barHtml} ${userTag} ${adminHtml}
+        ${barHtml} ${contribHtml} ${userTag} ${adminHtml}
       </div>`;
     }).join('');
   }

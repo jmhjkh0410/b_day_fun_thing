@@ -29,14 +29,13 @@
   .section + .section { border-top: 1px solid var(--border); }
   .section-label { font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 24px; }
 
-  /* Loading */
   .loading { text-align: center; padding: 40px 0; color: var(--muted); font-size: 0.85rem; }
 
   /* Admin banner */
   .admin-banner {
     display: none; max-width: 640px; margin: 0 auto;
     padding: 10px 24px; background: var(--fg); color: var(--bg);
-    font-size: 0.78rem; font-weight: 400; text-align: center;
+    font-size: 0.78rem; font-weight: 400;
     position: sticky; top: 0; z-index: 200;
   }
   .admin-banner.show { display: flex; justify-content: space-between; align-items: center; }
@@ -45,36 +44,83 @@
     padding: 4px 12px; border: 1px solid rgba(255,255,255,0.4); border-radius: 3px;
     background: transparent; color: var(--bg); cursor: pointer;
   }
-  .admin-banner button:hover { border-color: #fff; }
 
-  /* Wishlist */
+  /* ── Category Tabs ── */
+  .tab-bar {
+    display: flex; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid var(--border); margin-bottom: 20px;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 400;
+    padding: 10px 16px; border: none; background: none; color: var(--muted);
+    cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s; flex-shrink: 0;
+  }
+  .tab-btn.active { color: var(--fg); border-bottom-color: var(--fg); font-weight: 500; }
+  .tab-count {
+    font-size: 0.68rem; font-weight: 300; color: var(--muted);
+    margin-left: 4px;
+  }
+
+  /* ── Compact Accordion Cards ── */
   .wish-card {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: 6px; padding: 20px 22px; margin-bottom: 12px; transition: border-color 0.2s;
+    border: 1px solid var(--border); border-radius: 6px;
+    margin-bottom: 8px; overflow: hidden; transition: border-color 0.2s;
   }
-  .wish-card:hover { border-color: #bbb; }
-  .wish-card h3 {
-    font-size: 0.95rem; font-weight: 500; margin-bottom: 8px;
-    letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  }
-  .wish-card .desc { font-size: 0.82rem; color: var(--muted); margin-bottom: 12px; }
-  .wish-card .meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-  .wish-card .price { font-size: 0.85rem; font-weight: 400; }
-  .wish-card .price span { font-weight: 500; }
-  .wish-card .link-btn {
-    font-family: 'Noto Sans KR', sans-serif; font-size: 0.75rem; font-weight: 400;
-    color: var(--muted); text-decoration: none; border: 1px solid var(--border);
-    border-radius: 4px; padding: 4px 10px; transition: border-color 0.2s, color 0.2s;
-  }
-  .wish-card .link-btn:hover { border-color: var(--fg); color: var(--fg); }
-  .funded-tag { font-size: 0.7rem; font-weight: 400; color: var(--bg); background: var(--fg); border-radius: 3px; padding: 2px 8px; flex-shrink: 0; }
-  .wish-card .funded-bar-wrap { margin-top: 10px; background: var(--border); border-radius: 2px; height: 3px; overflow: hidden; }
-  .wish-card .funded-bar { height: 100%; background: var(--fg); border-radius: 2px; transition: width 0.4s ease; }
-  .wish-card .funded-text { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
-  .wish-card .user-added { font-size: 0.7rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+  .wish-card:hover { border-color: #ccc; }
 
-  /* Contributors */
-  .contrib-section { margin-top: 8px; }
+  .wish-header {
+    display: flex; align-items: center; padding: 14px 16px;
+    cursor: pointer; gap: 10px; background: var(--card-bg);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wish-header .wish-title {
+    flex: 1; font-size: 0.88rem; font-weight: 400;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    min-width: 0;
+  }
+  .wish-header .wish-title .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .wish-header .wish-price {
+    font-size: 0.82rem; font-weight: 500; white-space: nowrap; flex-shrink: 0;
+  }
+  .wish-header .wish-chevron {
+    width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.2s;
+    color: var(--muted);
+  }
+  .wish-card.open .wish-chevron { transform: rotate(180deg); }
+
+  /* Mini progress on header */
+  .wish-header .mini-bar {
+    width: 40px; height: 3px; background: var(--border); border-radius: 2px;
+    flex-shrink: 0; overflow: hidden;
+  }
+  .wish-header .mini-bar-fill { height: 100%; background: var(--fg); border-radius: 2px; }
+
+  .funded-tag { font-size: 0.65rem; font-weight: 400; color: var(--bg); background: var(--fg); border-radius: 3px; padding: 1px 6px; flex-shrink: 0; }
+
+  /* Expandable body */
+  .wish-body {
+    max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+    padding: 0 16px;
+  }
+  .wish-card.open .wish-body { max-height: 500px; padding: 0 16px 16px; }
+
+  .wish-body .desc { font-size: 0.82rem; color: var(--muted); margin-bottom: 10px; }
+  .wish-body .meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .wish-body .link-btn {
+    font-family: 'Noto Sans KR', sans-serif; font-size: 0.73rem; font-weight: 400;
+    color: var(--muted); text-decoration: none; border: 1px solid var(--border);
+    border-radius: 4px; padding: 3px 8px; transition: border-color 0.2s, color 0.2s;
+  }
+  .wish-body .link-btn:hover { border-color: var(--fg); color: var(--fg); }
+  .wish-body .funded-bar-wrap { background: var(--border); border-radius: 2px; height: 3px; overflow: hidden; margin-bottom: 4px; }
+  .wish-body .funded-bar { height: 100%; background: var(--fg); border-radius: 2px; transition: width 0.4s; }
+  .wish-body .funded-text { font-size: 0.73rem; color: var(--muted); margin-bottom: 6px; }
+  .wish-body .user-added { font-size: 0.7rem; color: var(--muted); font-style: italic; }
+
+  .contrib-section { margin-top: 6px; }
   .contrib-list { display: flex; flex-wrap: wrap; gap: 4px 12px; }
   .contrib-item { font-size: 0.73rem; color: var(--muted); }
 
@@ -84,12 +130,11 @@
   .admin-btn {
     font-family: 'Noto Sans KR', sans-serif; font-size: 0.72rem; font-weight: 400;
     padding: 5px 12px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--bg); color: var(--fg); cursor: pointer; transition: border-color 0.2s;
+    background: var(--bg); color: var(--fg); cursor: pointer;
   }
   .admin-btn:hover { border-color: var(--fg); }
   .admin-btn.danger { color: var(--danger); border-color: var(--danger); }
   .admin-btn.danger:hover { background: var(--danger); color: #fff; }
-
   .edit-form { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
   .edit-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
   .edit-input {
@@ -97,7 +142,6 @@
     padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px;
     background: var(--bg); color: var(--fg); outline: none;
   }
-  .edit-input:focus { border-color: #999; }
 
   /* Add form (admin only) */
   .add-form { margin-top: 32px; padding-top: 32px; border-top: 1px dashed var(--border); display: none; }
@@ -106,16 +150,14 @@
   .input-field {
     flex: 1 1 140px; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.85rem; font-weight: 300;
     padding: 10px 14px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--bg); color: var(--fg); outline: none; transition: border-color 0.2s;
+    background: var(--bg); color: var(--fg); outline: none;
   }
-  .input-field:focus { border-color: #999; }
   .input-field::placeholder { color: #bbb; }
   .btn-dark {
     font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 400;
     padding: 10px 20px; border: 1px solid var(--fg); border-radius: 4px;
-    background: var(--fg); color: var(--bg); cursor: pointer; white-space: nowrap; transition: opacity 0.2s;
+    background: var(--fg); color: var(--bg); cursor: pointer; white-space: nowrap;
   }
-  .btn-dark:hover { opacity: 0.8; }
 
   /* Shareholders */
   .total-fund { text-align: center; margin-bottom: 32px; }
@@ -140,9 +182,8 @@
     font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; font-weight: 400;
     width: 100%; max-width: 640px; padding: 14px 0;
     border: none; border-radius: 6px; background: var(--fg); color: var(--bg);
-    cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.2s;
+    cursor: pointer;
   }
-  .sticky-bottom button:hover { opacity: 0.85; }
 
   /* Modal */
   .modal-overlay {
@@ -164,16 +205,14 @@
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
   .modal-header h2 { font-size: 1.1rem; font-weight: 500; }
   .modal-close { background: none; border: none; font-size: 1.4rem; color: var(--muted); cursor: pointer; padding: 4px; line-height: 1; }
-  .modal-close:hover { color: var(--fg); }
   .modal-field { margin-bottom: 18px; }
   .modal-field label { display: block; font-size: 0.78rem; font-weight: 400; color: var(--muted); margin-bottom: 6px; }
   .modal-field input, .modal-field select, .modal-field textarea {
     width: 100%; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.88rem; font-weight: 300;
     padding: 11px 14px; border: 1px solid var(--border); border-radius: 6px;
-    background: var(--bg); color: var(--fg); outline: none; transition: border-color 0.2s;
+    background: var(--bg); color: var(--fg); outline: none;
     -webkit-appearance: none;
   }
-  .modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus { border-color: #999; }
   .modal-field input::placeholder, .modal-field textarea::placeholder { color: #bbb; }
   .modal-field textarea { resize: vertical; min-height: 60px; }
   .modal-field select {
@@ -187,12 +226,10 @@
   .modal-submit {
     width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; font-weight: 400;
     padding: 14px 0; border: none; border-radius: 6px;
-    background: var(--fg); color: var(--bg); cursor: pointer; margin-top: 8px; transition: opacity 0.2s;
+    background: var(--fg); color: var(--bg); cursor: pointer; margin-top: 8px;
   }
-  .modal-submit:hover { opacity: 0.85; }
   .modal-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* Pay step */
   .pay-step { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); animation: fadeIn 0.3s ease; }
   .pay-step.show { display: block; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -202,19 +239,15 @@
     flex: 1; font-family: 'Noto Sans KR', sans-serif; font-size: 0.8rem; font-weight: 400;
     padding: 12px 0; border: 1px solid var(--border); border-radius: 6px;
     background: var(--bg); color: var(--fg); cursor: pointer;
-    text-align: center; text-decoration: none; display: block; transition: border-color 0.2s;
+    text-align: center; text-decoration: none; display: block;
   }
-  .pay-btn:hover { border-color: var(--fg); }
   .pay-btn.toss { background: #0064FF; color: #fff; border-color: #0064FF; }
-  .pay-btn.toss:hover { opacity: 0.9; }
   .pay-btn.kakao { background: #FEE500; color: #191919; border-color: #FEE500; }
-  .pay-btn.kakao:hover { opacity: 0.9; }
   .pay-done {
     width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 0.85rem; font-weight: 400;
     padding: 12px 0; border: 1px solid var(--border); border-radius: 6px;
     background: var(--bg); color: var(--muted); cursor: pointer; margin-top: 12px;
   }
-  .pay-done:hover { border-color: var(--fg); color: var(--fg); }
 
   .login-error { font-size: 0.8rem; color: var(--danger); margin-top: 8px; display: none; }
   .login-error.show { display: block; }
@@ -231,7 +264,7 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   footer { max-width: 640px; margin: 0 auto; padding: 24px 24px 32px; text-align: center; font-size: 0.72rem; color: #ccc; }
-  footer .admin-login-link { color: #ddd; cursor: pointer; text-decoration: none; transition: color 0.2s; }
+  footer .admin-login-link { color: #ddd; cursor: pointer; text-decoration: none; }
   footer .admin-login-link:hover { color: var(--muted); }
 </style>
 </head>
@@ -249,6 +282,7 @@
 
 <div class="section" id="wishlist-section">
   <div class="section-label">Wishlist</div>
+  <div class="tab-bar" id="tab-bar"></div>
   <div id="wish-container"><div class="loading">불러오는 중...</div></div>
   <div class="add-form admin-btns" id="admin-add-form">
     <div class="section-label" style="margin-bottom:14px;">위시리스트에 추가하기</div>
@@ -355,16 +389,35 @@
   const ACCOUNT_BANK = '토스뱅크';
   const ACCOUNT_NO = '1000-1960-1144';
   const ACCOUNT_FULL = `${ACCOUNT_BANK} ${ACCOUNT_NO}`;
-  const TOSS_BANK_CODE = '092';
   const ACCOUNT_NO_CLEAN = ACCOUNT_NO.replace(/-/g, '');
   const KAKAO_PAY_LINK = 'https://qr.kakaopay.com/Ej8Gw498b';
 
   let isAdmin = false;
   let wishlist = [];
   let donations = [];
+  let activeTab = '전체';
+
+  // ── Category mapping by keywords ──
+  const CATEGORIES = [
+    { key: '전체', icon: '' },
+    { key: '🎸 굿즈/장비', icon: '🎸', keywords: ['실리카겔','t-shirt','티셔츠','굿즈','기타 피크','기타 줄','앨범','ep','정규','피크','줄','스트링'] },
+    { key: '✈️ 여행', icon: '✈️', keywords: ['온천','오페라','해리포터','뮤지컬','융프라우','피르스트','교통','소매치기','석회수','충전','고산병','컵라면','스위스','런던','부다페스트','빈','파리','밀라노','센강','유람선'] },
+    { key: '🎁 기타', icon: '🎁', keywords: [] }
+  ];
+
+  function categorize(item) {
+    const name = (item.name || '').toLowerCase();
+    const desc = (item.description || '').toLowerCase();
+    const combined = name + ' ' + desc;
+    for (const cat of CATEGORIES) {
+      if (cat.key === '전체' || cat.key === '🎁 기타') continue;
+      if (cat.keywords.some(kw => combined.includes(kw.toLowerCase()))) return cat.key;
+    }
+    return '🎁 기타';
+  }
 
   // ══════════════════════════════════════════
-  // Supabase REST helpers
+  // Supabase
   // ══════════════════════════════════════════
   const headers = {
     'apikey': SUPABASE_KEY,
@@ -385,6 +438,7 @@
 
   async function loadWishlist() {
     wishlist = await sbFetch('wishlist', 'GET', '?order=sort_order.asc,id.asc');
+    renderTabs();
     renderWishlist();
     populateSelect();
   }
@@ -402,8 +456,7 @@
   function maskName(name) {
     if (!name) return '';
     const c = name.trim();
-    if (c.length <= 1) return c;
-    return c[0] + 'O'.repeat(c.length - 1);
+    return c.length <= 1 ? c : c[0] + 'O'.repeat(c.length - 1);
   }
 
   function showToast(msg) {
@@ -468,49 +521,106 @@
   });
 
   // ══════════════════════════════════════════
-  // Render Wishlist
+  // Tabs
+  // ══════════════════════════════════════════
+  function renderTabs() {
+    const counts = {};
+    CATEGORIES.forEach(c => counts[c.key] = 0);
+    wishlist.forEach(item => {
+      const cat = categorize(item);
+      counts[cat] = (counts[cat] || 0) + 1;
+      counts['전체']++;
+    });
+
+    const bar = document.getElementById('tab-bar');
+    bar.innerHTML = CATEGORIES
+      .filter(c => c.key === '전체' || counts[c.key] > 0)
+      .map(c => `<button class="tab-btn ${activeTab === c.key ? 'active' : ''}" data-tab="${c.key}">${c.key}<span class="tab-count">${counts[c.key]}</span></button>`)
+      .join('');
+
+    bar.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeTab = btn.dataset.tab;
+        bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderWishlist();
+      });
+    });
+  }
+
+  // ══════════════════════════════════════════
+  // Render Wishlist (accordion)
   // ══════════════════════════════════════════
   function renderWishlist() {
-    document.getElementById('wish-container').innerHTML = wishlist.map((item, i) => {
+    const filtered = activeTab === '전체' ? wishlist : wishlist.filter(item => categorize(item) === activeTab);
+
+    if (filtered.length === 0) {
+      document.getElementById('wish-container').innerHTML = '<div class="loading" style="padding:20px 0;">항목이 없습니다.</div>';
+      return;
+    }
+
+    document.getElementById('wish-container').innerHTML = filtered.map((item, fi) => {
+      const i = wishlist.indexOf(item);
       const pct = item.price > 0 ? Math.min(100, Math.round(item.funded / item.price * 100)) : 0;
       const done = item.funded >= item.price;
-      const linkHtml = item.link ? `<a href="${esc(item.link)}" target="_blank" rel="noopener" class="link-btn">상품 보기 →</a>` : '';
-      const barHtml = item.funded > 0
-        ? `<div class="funded-bar-wrap"><div class="funded-bar" style="width:${pct}%"></div></div>
-           <div class="funded-text">${fmt(item.funded)}원 / ${fmt(item.price)}원 (${pct}%)</div>` : '';
-      const userTag = item.added_by ? `<div class="user-added">${esc(item.added_by)}님이 추가</div>` : '';
 
-      // contributors for this item
+      // Contributors
       const contribs = donations.filter(d => d.gift === item.name);
       let contribHtml = '';
       if (contribs.length > 0 && item.price > 0) {
-        const names = contribs.map(c =>
-          `<span class="contrib-item">${isAdmin ? esc(c.name) : esc(maskName(c.name))} ${Math.round(c.amount / item.price * 100)}%</span>`
-        ).join('');
-        contribHtml = `<div class="contrib-section"><div class="contrib-list">${names}</div></div>`;
+        contribHtml = `<div class="contrib-section"><div class="contrib-list">${
+          contribs.map(c => `<span class="contrib-item">${isAdmin ? esc(c.name) : esc(maskName(c.name))} ${Math.round(c.amount / item.price * 100)}%</span>`).join('')
+        }</div></div>`;
       }
+
+      const linkHtml = item.link ? `<a href="${esc(item.link)}" target="_blank" rel="noopener" class="link-btn">상품 보기 →</a>` : '';
+      const userTag = item.added_by ? `<div class="user-added">${esc(item.added_by)}님이 추가</div>` : '';
 
       const adminHtml = `<div class="admin-btns">
         <button class="admin-btn" onclick="editWish(${i})">수정</button>
         <button class="admin-btn danger" onclick="deleteWish(${i})">삭제</button>
       </div>`;
-      return `<div class="wish-card" id="wish-${i}">
-        <h3>${esc(item.name)}${done ? '<span class="funded-tag">달성!</span>' : ''}</h3>
-        <p class="desc">${esc(item.description)}</p>
-        <div class="meta">
-          <span class="price">필요 금액: <span>${fmt(item.price)}원</span></span>
-          ${linkHtml}
+
+      const chevron = `<svg class="wish-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>`;
+
+      return `<div class="wish-card" id="wish-${i}" onclick="toggleCard(event, ${i})">
+        <div class="wish-header">
+          <div class="wish-title">
+            <span class="name">${esc(item.name)}</span>
+            ${done ? '<span class="funded-tag">달성!</span>' : ''}
+          </div>
+          ${item.funded > 0 && !done ? `<div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%"></div></div>` : ''}
+          <span class="wish-price">${item.price > 0 ? fmt(item.price) + '원' : '-'}</span>
+          ${chevron}
         </div>
-        ${barHtml} ${contribHtml} ${userTag} ${adminHtml}
+        <div class="wish-body">
+          ${item.description ? `<div class="desc">${esc(item.description)}</div>` : ''}
+          ${linkHtml ? `<div class="meta">${linkHtml}</div>` : ''}
+          ${item.funded > 0 ? `
+            <div class="funded-bar-wrap"><div class="funded-bar" style="width:${pct}%"></div></div>
+            <div class="funded-text">${fmt(item.funded)}원 / ${fmt(item.price)}원 (${pct}%)</div>
+          ` : ''}
+          ${contribHtml}
+          ${userTag}
+          ${adminHtml}
+        </div>
       </div>`;
     }).join('');
   }
 
-  // Admin: edit wish
+  window.toggleCard = function(e, i) {
+    // don't toggle if clicking a link, button, or input
+    if (e.target.closest('a, button, input, .edit-form')) return;
+    document.getElementById(`wish-${i}`).classList.toggle('open');
+  };
+
+  // ── Admin: edit/delete wish ──
   window.editWish = function(i) {
     const item = wishlist[i];
     const card = document.getElementById(`wish-${i}`);
     if (card.querySelector('.edit-form')) return;
+    // ensure card is open
+    card.classList.add('open');
     const form = document.createElement('div');
     form.className = 'edit-form';
     form.innerHTML = `
@@ -525,7 +635,7 @@
         <button class="admin-btn" onclick="saveWish(${i})">저장</button>
         <button class="admin-btn" onclick="renderWishlist()">취소</button>
       </div>`;
-    card.appendChild(form);
+    card.querySelector('.wish-body').appendChild(form);
   };
 
   window.saveWish = async function(i) {
@@ -540,8 +650,7 @@
     try {
       await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, updates);
       Object.assign(item, updates);
-      renderWishlist();
-      populateSelect();
+      renderTabs(); renderWishlist(); populateSelect();
       showToast('위시리스트 수정 완료');
     } catch (e) { showToast('수정 실패: ' + e.message); }
   };
@@ -551,8 +660,7 @@
     try {
       await sbFetch('wishlist', 'DELETE', `?id=eq.${wishlist[i].id}`);
       wishlist.splice(i, 1);
-      renderWishlist();
-      populateSelect();
+      renderTabs(); renderWishlist(); populateSelect();
       showToast('위시리스트 항목 삭제됨');
     } catch (e) { showToast('삭제 실패: ' + e.message); }
   };
@@ -561,8 +669,7 @@
   // Render Donations
   // ══════════════════════════════════════════
   function renderDonations() {
-    document.getElementById('total-amount').textContent =
-      fmt(donations.reduce((s, d) => s + d.amount, 0));
+    document.getElementById('total-amount').textContent = fmt(donations.reduce((s, d) => s + d.amount, 0));
     document.getElementById('feed-container').innerHTML = donations.length === 0
       ? '<div class="loading" style="padding:20px 0;">아직 후원 내역이 없습니다.</div>'
       : donations.map((d, i) => {
@@ -583,13 +690,10 @@
       }).join('');
   }
 
-  // Admin: edit donation
   window.editDonation = function(i) {
-    const d = donations[i];
-    const el = document.getElementById(`don-${i}`);
+    const d = donations[i]; const el = document.getElementById(`don-${i}`);
     if (el.querySelector('.edit-form')) return;
-    const form = document.createElement('div');
-    form.className = 'edit-form';
+    const form = document.createElement('div'); form.className = 'edit-form';
     form.innerHTML = `
       <div class="edit-row">
         <input class="edit-input" id="ed-name-${i}" value="${esc(d.name)}" placeholder="이름">
@@ -616,8 +720,7 @@
     };
     try {
       await sbFetch('donations', 'PATCH', `?id=eq.${d.id}`, updates);
-      Object.assign(d, updates);
-      renderDonations();
+      Object.assign(d, updates); renderDonations();
       showToast('후원 내역 수정 완료');
     } catch (e) { showToast('수정 실패: ' + e.message); }
   };
@@ -627,8 +730,7 @@
     if (!confirm(`${d.name}님의 후원(${fmt(d.amount)}원)을 삭제할까요?`)) return;
     try {
       await sbFetch('donations', 'DELETE', `?id=eq.${d.id}`);
-      donations.splice(i, 1);
-      renderDonations();
+      donations.splice(i, 1); renderDonations();
       showToast('후원 내역 삭제됨');
     } catch (e) { showToast('삭제 실패: ' + e.message); }
   };
@@ -700,14 +802,15 @@
 
     const amount = parseInt(raw);
     lastSubmitAmount = amount;
-    let giftName, wishIdx = -1;
-    let customItemPrice = 0;
+    let giftName, wishIdx = -1, customItemPrice = 0;
     if (sel.value === '__custom__') {
       giftName = custom;
       const cpRaw = document.getElementById('gift-custom-price').value.replace(/[^0-9]/g, '');
       customItemPrice = cpRaw ? parseInt(cpRaw) : amount;
+    } else {
+      wishIdx = parseInt(sel.value);
+      giftName = wishlist[wishIdx].name;
     }
-    else { wishIdx = parseInt(sel.value); giftName = wishlist[wishIdx].name; }
 
     pendingDonation = { name, amount, gift: giftName, message: msg, link: linkVal, wishIdx, customItemPrice };
 
@@ -723,32 +826,20 @@
       await sbFetch('donations', 'POST', '', {
         name: p.name, amount: p.amount, gift: p.gift, message: p.message, link: p.link
       });
-
       if (p.wishIdx >= 0) {
         const item = wishlist[p.wishIdx];
-        const newFunded = item.funded + p.amount;
-        await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, { funded: newFunded });
-        if (p.link && !item.link) {
-          await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, { link: p.link });
-        }
+        await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, { funded: item.funded + p.amount });
+        if (p.link && !item.link) await sbFetch('wishlist', 'PATCH', `?id=eq.${item.id}`, { link: p.link });
       } else {
         await sbFetch('wishlist', 'POST', '', {
-          name: p.gift,
-          description: '',
-          price: p.customItemPrice || p.amount,
-          link: p.link || '',
-          funded: p.amount,
-          added_by: p.name,
+          name: p.gift, description: '', price: p.customItemPrice || p.amount,
+          link: p.link || '', funded: p.amount, added_by: p.name,
           sort_order: wishlist.length + 1
         });
       }
-
       pendingDonation = null;
-      await loadWishlist();
-      await loadDonations();
-    } catch (e) {
-      showToast('등록 실패: ' + e.message);
-    }
+      await loadWishlist(); await loadDonations();
+    } catch (e) { showToast('등록 실패: ' + e.message); }
   }
 
   function resetModalForm() {
@@ -768,7 +859,7 @@
   }
 
   // ══════════════════════════════════════════
-  // Pay UI states
+  // Pay UI
   // ══════════════════════════════════════════
   function showPayState(state) {
     document.getElementById('pay-choose').style.display = state === 'choose' ? '' : 'none';
@@ -779,49 +870,35 @@
 
   document.getElementById('copy-acct-btn').addEventListener('click', async () => {
     await copyToClipboard(ACCOUNT_FULL);
-    await commitDonation();
-    resetModalForm();
-    closeModal();
+    await commitDonation(); resetModalForm(); closeModal();
     showToast('계좌 복사 완료! 후원이 등록되었습니다.');
   });
 
   let waitingAppReturn = false;
   document.getElementById('toss-btn').addEventListener('click', e => {
-    e.preventDefault();
-    showPayState('waiting');
-    waitingAppReturn = true;
+    e.preventDefault(); showPayState('waiting'); waitingAppReturn = true;
     window.location.href = buildTossLink(lastSubmitAmount);
   });
   document.getElementById('kakao-btn').addEventListener('click', e => {
-    e.preventDefault();
-    showPayState('waiting');
-    waitingAppReturn = true;
+    e.preventDefault(); showPayState('waiting'); waitingAppReturn = true;
     window.open(KAKAO_PAY_LINK, '_blank');
   });
 
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') return;
-    if (!pendingDonation || !waitingAppReturn) return;
+    if (document.visibilityState !== 'visible' || !pendingDonation || !waitingAppReturn) return;
     waitingAppReturn = false;
     setTimeout(() => showPayState('thankyou'), 300);
   });
 
   document.getElementById('pay-confirm-yes').addEventListener('click', async () => {
-    await commitDonation();
-    resetModalForm();
-    closeModal();
+    await commitDonation(); resetModalForm(); closeModal();
     showToast('감사합니다! 후원이 등록되었습니다. 🎉');
   });
   document.getElementById('pay-confirm-no').addEventListener('click', () => showPayState('choose'));
-
-  document.getElementById('pay-done').addEventListener('click', () => {
-    pendingDonation = null;
-    resetModalForm();
-    closeModal();
-  });
+  document.getElementById('pay-done').addEventListener('click', () => { pendingDonation = null; resetModalForm(); closeModal(); });
 
   // ══════════════════════════════════════════
-  // Add to wishlist (admin only)
+  // Add to wishlist (admin)
   // ══════════════════════════════════════════
   document.getElementById('add-btn').addEventListener('click', async () => {
     const ni = document.getElementById('add-name');
@@ -830,9 +907,8 @@
     const name = ni.value.trim();
     const priceRaw = pi.value.replace(/[^0-9]/g, '');
     const link = li.value.trim();
-    if (!name) { showToast('선물 이름을 입력해 주세요.'); ni.focus(); return; }
-    if (!priceRaw || parseInt(priceRaw) <= 0) { showToast('금액을 입력해 주세요.'); pi.focus(); return; }
-
+    if (!name) { showToast('선물 이름을 입력해 주세요.'); return; }
+    if (!priceRaw || parseInt(priceRaw) <= 0) { showToast('금액을 입력해 주세요.'); return; }
     try {
       await sbFetch('wishlist', 'POST', '', {
         name, description: '', price: parseInt(priceRaw),
@@ -849,9 +925,8 @@
   // Init
   // ══════════════════════════════════════════
   (async () => {
-    try {
-      await Promise.all([loadWishlist(), loadDonations()]);
-    } catch (e) {
+    try { await Promise.all([loadWishlist(), loadDonations()]); }
+    catch (e) {
       document.getElementById('wish-container').innerHTML = '<div class="loading">데이터를 불러올 수 없습니다.</div>';
       document.getElementById('feed-container').innerHTML = '<div class="loading">데이터를 불러올 수 없습니다.</div>';
     }

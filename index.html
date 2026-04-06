@@ -48,10 +48,15 @@
 
   .section { max-width: 640px; margin: 0 auto; padding: 28px 0; }
 
-  .cat-strip { margin-bottom: 8px; }
+  .cat-strip { margin-bottom: 8px; position: relative; }
   .cat-header { display: flex; justify-content: space-between; align-items: center; padding: 0 24px; margin-bottom: 12px; }
   .cat-title { font-size: 0.9rem; font-weight: 500; }
   .cat-count { font-size: 0.68rem; color: var(--muted); font-weight: 300; margin-left: 6px; }
+  .cat-hint {
+    font-size: 0.68rem; color: var(--muted-light); font-weight: 300;
+    transition: opacity 0.4s; white-space: nowrap;
+  }
+  .cat-hint.hidden { opacity: 0; pointer-events: none; }
 
   .cat-scroll {
     display: flex; gap: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch;
@@ -59,8 +64,26 @@
   }
   .cat-scroll::-webkit-scrollbar { display: none; }
 
+  /* Right fade hint */
+  .cat-strip::after {
+    content: ''; position: absolute; top: 36px; right: 0; bottom: 16px;
+    width: 52px; pointer-events: none;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.9) 75%, #fff);
+    transition: opacity 0.4s; z-index: 2;
+  }
+  .cat-strip.scrolled-end::after { opacity: 0; }
+
+  /* Nudge animation */
+  @keyframes scrollNudge {
+    0% { transform: translateX(0); }
+    35% { transform: translateX(-28px); }
+    55% { transform: translateX(6px); }
+    100% { transform: translateX(0); }
+  }
+  .cat-scroll.nudge { animation: scrollNudge 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+
   .h-card {
-    flex: 0 0 152px; min-width: 152px;
+    flex: 0 0 144px; min-width: 144px;
     background: var(--card-bg); border: 1px solid var(--border);
     border-radius: 12px; padding: 14px 13px 12px;
     display: flex; flex-direction: column; justify-content: space-between;
@@ -477,10 +500,50 @@ function renderAll(){
   const strips=document.getElementById('cat-strips');
   strips.innerHTML=CATEGORIES.filter(c=>grouped[c.key].length>0).map(c=>{
     const items=grouped[c.key];
-    return '<div class="cat-strip"><div class="cat-header"><span class="cat-title">'+c.emoji+' '+c.label+'<span class="cat-count">'+items.length+'</span></span></div><div class="cat-scroll">'+items.map(o=>buildCard(o.item,o.idx)).join('')+'</div></div>';
+    return '<div class="cat-strip"><div class="cat-header"><span class="cat-title">'+c.emoji+' '+c.label+'<span class="cat-count">'+items.length+'</span></span>'+(items.length>2?'<span class="cat-hint">밀어서 더 보기 →</span>':'')+'</div><div class="cat-scroll">'+items.map(o=>buildCard(o.item,o.idx)).join('')+'</div></div>';
   }).join('');
   document.getElementById('all-grid').innerHTML=wishlist.map((item,i)=>buildCard(item,i)).join('');
   renderHero();
+  initScrollHints();
+}
+
+let nudgeDone=false;
+function initScrollHints(){
+  document.querySelectorAll('.cat-strip').forEach((strip,i)=>{
+    const scroll=strip.querySelector('.cat-scroll');
+    const hint=strip.querySelector('.cat-hint');
+    if(!scroll)return;
+
+    const isScrollable=scroll.scrollWidth>scroll.clientWidth+10;
+    if(!isScrollable){
+      strip.classList.add('scrolled-end');
+      if(hint)hint.classList.add('hidden');
+      return;
+    }
+
+    function checkEnd(){
+      const atEnd=scroll.scrollLeft+scroll.clientWidth>=scroll.scrollWidth-16;
+      strip.classList.toggle('scrolled-end',atEnd);
+    }
+    checkEnd();
+
+    let userScrolled=false;
+    scroll.addEventListener('scroll',()=>{
+      checkEnd();
+      if(!userScrolled&&hint){userScrolled=true;hint.classList.add('hidden');}
+    },{passive:true});
+  });
+
+  if(!nudgeDone){
+    nudgeDone=true;
+    document.querySelectorAll('.cat-scroll').forEach((scroll,i)=>{
+      if(scroll.scrollWidth<=scroll.clientWidth+10)return;
+      setTimeout(()=>{
+        scroll.classList.add('nudge');
+        scroll.addEventListener('animationend',()=>scroll.classList.remove('nudge'),{once:true});
+      },600+i*200);
+    });
+  }
 }
 
 document.getElementById('all-toggle').addEventListener('click',function(){

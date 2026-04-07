@@ -471,7 +471,7 @@ function tryLogin(){if(document.getElementById('login-pw').value===MASTER_PW){lo
 document.getElementById('admin-logout').addEventListener('click',()=>{setAdminMode(false);showToast('관리자 모드 해제');});
 
 // Select
-function populateSelect(){const s=document.getElementById('gift-select');s.innerHTML='<option value="" disabled selected>아이템을 선택하세요</option>';wishlist.forEach((w,i)=>{const o=document.createElement('option');o.value=i;o.textContent=w.name+' ('+fmt(w.price)+'원)';s.appendChild(o);});const c=document.createElement('option');c.value='__custom__';c.textContent='✎ 직접 입력';s.appendChild(c);}
+function populateSelect(){const s=document.getElementById('gift-select');s.innerHTML='<option value="" disabled selected>아이템을 선택하세요</option>';wishlist.forEach((w,i)=>{const o=document.createElement('option');o.value=i;const pct=w.price>0?Math.round(w.funded/w.price*100):0;const done=w.funded>=w.price&&w.price>0;let label=w.name+' ('+fmt(w.price)+'원)';if(done)label='✅ '+label;else if(w.funded>0)label=label+' · '+pct+'% 달성';o.textContent=label;s.appendChild(o);});const c=document.createElement('option');c.value='__custom__';c.textContent='✎ 직접 입력';s.appendChild(c);}
 
 // Gift modal
 const overlay=document.getElementById('modal-overlay');

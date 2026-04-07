@@ -393,8 +393,8 @@ window.openDetail=function(i){
     '<div class="detail-price">'+(item.price>0?fmt(item.price)+'원':'-')+'</div>'+
     (item.link?'<div class="detail-link"><a href="'+esc(item.link)+'" target="_blank" rel="noopener">상품 보기 →</a></div>':'')+
     (item.funded>0?'<div class="funded-bar-wrap"><div class="funded-bar" style="width:'+pct+'%;background:'+barColor+'"></div></div><div class="funded-text">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원 ('+pct+'%)</div>':'')+ch+
-    '<div class="detail-admin" id="da-'+i+'"><button class="admin-btn" onclick="editWD('+i+')">수정</button><button class="admin-btn danger" onclick="delWD('+i+')">삭제</button></div>'+
     '<div class="detail-edit-area" id="dea-'+i+'"></div>'+
+    '<div class="detail-admin" id="da-'+i+'"><button class="admin-btn" onclick="editWD('+i+')">수정</button><button class="admin-btn danger" onclick="delWD('+i+')">삭제</button></div>'+
     (!done?'<button class="detail-fund-btn" onclick="closeDetail();openGiftModal('+i+')">이 아이템 후원하기</button>':'')+
     '<button class="detail-close" onclick="closeDetail()">닫기</button>';
   detailOverlay.classList.add('open');

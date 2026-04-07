@@ -116,19 +116,31 @@
   .detail-sheet .detail-close { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 400; padding: 12px 0; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--muted); cursor: pointer; margin-top: 8px; }
   .detail-sheet .detail-fund-btn { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 0.85rem; font-weight: 400; padding: 13px 0; border: none; border-radius: 6px; background: var(--fg); color: var(--bg); cursor: pointer; margin-top: 8px; }
 
-  /* Admin controls — FIXED equal sizing */
-  .detail-admin { display: none; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  /* Admin controls — fixed equal sizing */
+  .detail-admin { display: none; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
   .admin-mode .detail-admin { display: flex; }
-  .admin-btn {
+  .detail-admin .admin-btn {
     flex: 1; text-align: center;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 0.78rem; font-weight: 400;
+    padding: 10px 0; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg); color: var(--fg); cursor: pointer;
+  }
+  .detail-admin .admin-btn:hover { border-color: var(--fg); }
+  .detail-admin .admin-btn.danger { color: var(--danger); border-color: var(--danger); }
+  .detail-admin .admin-btn.danger:hover { background: var(--danger); color: #fff; }
+  .detail-edit-area { margin-top: 0; }
+  .edit-form { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+  .edit-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+
+  /* Generic admin-btn (for donation feed etc) */
+  .admin-btn {
     font-family: 'Noto Sans KR', sans-serif; font-size: 0.75rem; font-weight: 400;
-    padding: 8px 0; border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 4px;
     background: var(--bg); color: var(--fg); cursor: pointer;
   }
   .admin-btn:hover { border-color: var(--fg); }
   .admin-btn.danger { color: var(--danger); border-color: var(--danger); }
   .admin-btn.danger:hover { background: var(--danger); color: #fff; }
-  .edit-form { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
   .edit-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
   .edit-input, .edit-select {
     flex: 1 1 120px; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 300;
@@ -382,6 +394,7 @@ window.openDetail=function(i){
     (item.link?'<div class="detail-link"><a href="'+esc(item.link)+'" target="_blank" rel="noopener">상품 보기 →</a></div>':'')+
     (item.funded>0?'<div class="funded-bar-wrap"><div class="funded-bar" style="width:'+pct+'%;background:'+barColor+'"></div></div><div class="funded-text">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원 ('+pct+'%)</div>':'')+ch+
     '<div class="detail-admin" id="da-'+i+'"><button class="admin-btn" onclick="editWD('+i+')">수정</button><button class="admin-btn danger" onclick="delWD('+i+')">삭제</button></div>'+
+    '<div class="detail-edit-area" id="dea-'+i+'"></div>'+
     (!done?'<button class="detail-fund-btn" onclick="closeDetail();openGiftModal('+i+')">이 아이템 후원하기</button>':'')+
     '<button class="detail-close" onclick="closeDetail()">닫기</button>';
   detailOverlay.classList.add('open');
@@ -391,7 +404,7 @@ detailOverlay.addEventListener('click',e=>{if(e.target===detailOverlay)closeDeta
 
 // Edit wish in detail — with category dropdown
 window.editWD=function(i){
-  const item=wishlist[i];const el=document.getElementById('da-'+i);
+  const item=wishlist[i];const el=document.getElementById('dea-'+i);
   if(el.querySelector('.edit-form'))return;
   const catOptions=CAT_LIST.map(c=>'<option value="'+c.key+'"'+(categorize(item)===c.key?' selected':'')+'>'+c.key+'</option>').join('');
   const f=document.createElement('div');f.className='edit-form';

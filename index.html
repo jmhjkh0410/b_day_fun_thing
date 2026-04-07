@@ -192,6 +192,18 @@
   .modal-field select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%23777' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
   .custom-gift-row { display: none; margin-top: 8px; }
   .custom-gift-row.show { display: block; }
+  .select-info {
+    display: none; margin-top: 10px; padding: 12px 14px;
+    background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border);
+  }
+  .select-info.show { display: block; }
+  .select-info .si-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .select-info .si-funded { font-size: 0.82rem; font-weight: 400; }
+  .select-info .si-pct { font-size: 0.75rem; color: var(--muted); }
+  .select-info .si-bar { width: 100%; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+  .select-info .si-bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+  .select-info .si-remaining { font-size: 0.72rem; color: var(--muted); }
+  .select-info .si-done { font-size: 0.78rem; color: var(--green); font-weight: 400; }
   .modal-field .hint { font-size: 0.72rem; color: #bbb; margin-top: 4px; }
   .modal-submit { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; font-weight: 400; padding: 14px 0; border: none; border-radius: 6px; background: var(--fg); color: var(--bg); cursor: pointer; margin-top: 8px; }
   .modal-submit:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -260,6 +272,7 @@
   <div class="modal-header"><h2>생일 펀딩 후원</h2><button class="modal-close" id="modal-close">&times;</button></div>
   <div class="modal-field"><label>이름</label><input type="text" id="gift-name" placeholder="홍길동"></div>
   <div class="modal-field"><label>선물 (지분 태울 아이템)</label><select id="gift-select"></select>
+    <div class="select-info" id="select-info"></div>
     <div class="custom-gift-row" id="custom-gift-row"><input type="text" id="gift-custom" placeholder="직접 입력할 선물 이름"><input type="text" id="gift-custom-price" placeholder="아이템 전체 금액 (원)" inputmode="numeric" style="margin-top:8px;"><div class="hint">위시리스트에 등록될 아이템 총액이에요</div></div>
   </div>
   <div class="modal-field"><label>내가 후원할 금액 (원)</label><input type="text" id="gift-amount" placeholder="50,000" inputmode="numeric"></div>
@@ -462,13 +475,37 @@ function populateSelect(){const s=document.getElementById('gift-select');s.inner
 
 // Gift modal
 const overlay=document.getElementById('modal-overlay');
-function openGiftModal(pre){populateSelect();overlay.classList.add('open');document.body.style.overflow='hidden';if(pre!==undefined&&pre>=0){document.getElementById('gift-select').value=pre;document.getElementById('custom-gift-row').classList.remove('show');}}
+function openGiftModal(pre){populateSelect();overlay.classList.add('open');document.body.style.overflow='hidden';if(pre!==undefined&&pre>=0){document.getElementById('gift-select').value=pre;document.getElementById('custom-gift-row').classList.remove('show');updateSelectInfo(pre);}else{updateSelectInfo(-1);}}
 window.openGiftModal=openGiftModal;
 document.getElementById('gift-btn').addEventListener('click',()=>openGiftModal());
-function closeModal(){overlay.classList.remove('open');document.body.style.overflow='';document.getElementById('gift-submit').style.display='';document.getElementById('gift-submit').disabled=false;document.querySelectorAll('#modal-overlay .modal-field').forEach(el=>el.style.display='');document.getElementById('pay-step').classList.remove('show');showPayState('choose');pendingDonation=null;}
+function closeModal(){overlay.classList.remove('open');document.body.style.overflow='';document.getElementById('gift-submit').style.display='';document.getElementById('gift-submit').disabled=false;document.querySelectorAll('#modal-overlay .modal-field').forEach(el=>el.style.display='');document.getElementById('pay-step').classList.remove('show');document.getElementById('select-info').classList.remove('show');showPayState('choose');pendingDonation=null;}
 document.getElementById('modal-close').addEventListener('click',closeModal);
 overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
-document.getElementById('gift-select').addEventListener('change',function(){const cr=document.getElementById('custom-gift-row');if(this.value==='__custom__'){cr.classList.add('show');document.getElementById('gift-custom').focus();}else cr.classList.remove('show');});
+document.getElementById('gift-select').addEventListener('change',function(){
+  const cr=document.getElementById('custom-gift-row');
+  if(this.value==='__custom__'){cr.classList.add('show');document.getElementById('gift-custom').focus();updateSelectInfo(-1);}
+  else{cr.classList.remove('show');updateSelectInfo(parseInt(this.value));}
+});
+
+function updateSelectInfo(idx){
+  const info=document.getElementById('select-info');
+  if(idx<0||idx>=wishlist.length){info.classList.remove('show');return;}
+  const item=wishlist[idx];
+  if(!item.price||item.price<=0){info.classList.remove('show');return;}
+  const pct=Math.min(100,Math.round(item.funded/item.price*100));
+  const done=item.funded>=item.price;
+  const remaining=Math.max(0,item.price-item.funded);
+  const barColor=pct>=80?'var(--green)':pct>=30?'var(--accent-soft)':'var(--muted-light)';
+  info.classList.add('show');
+  if(done){
+    info.innerHTML='<div class="si-done">✅ 이 아이템은 이미 달성되었습니다!</div>';
+  }else{
+    info.innerHTML=
+      '<div class="si-row"><span class="si-funded">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원</span><span class="si-pct">'+pct+'%</span></div>'+
+      '<div class="si-bar"><div class="si-bar-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div>'+
+      '<div class="si-remaining">남은 금액: '+fmt(remaining)+'원</div>';
+  }
+}
 
 let lastSubmitAmount=0,pendingDonation=null;
 document.getElementById('gift-submit').addEventListener('click',()=>{

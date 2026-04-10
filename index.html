@@ -570,12 +570,9 @@ function resetModalForm(){['gift-name','gift-custom','gift-custom-price','gift-a
 function showPayState(s){document.getElementById('pay-choose').style.display=s==='choose'?'':'none';document.getElementById('pay-waiting').style.display=s==='waiting'?'':'none';document.getElementById('pay-thankyou').style.display=s==='thankyou'?'':'none';document.getElementById('pay-done').style.display=s==='waiting'?'none':'';}
 
 document.getElementById('copy-acct-btn').addEventListener('click',async()=>{await copyToClipboard(ACCOUNT_FULL);await commitDonation();resetModalForm();closeModal();showToast('계좌 복사 완료! 후원이 등록되었습니다.');});
-let waitingAppReturn=false;
-document.getElementById('toss-btn').addEventListener('click',e=>{e.preventDefault();showPayState('waiting');waitingAppReturn=true;window.location.href=buildTossLink(lastSubmitAmount);});
-document.getElementById('kakao-btn').addEventListener('click',e=>{e.preventDefault();showPayState('waiting');waitingAppReturn=true;window.open(KAKAO_PAY_LINK,'_blank');});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible'||!pendingDonation||!waitingAppReturn)return;waitingAppReturn=false;setTimeout(()=>showPayState('thankyou'),300);});
-document.getElementById('pay-confirm-yes').addEventListener('click',async()=>{await commitDonation();resetModalForm();closeModal();showToast('감사합니다! 후원이 등록되었습니다. 🎉');});
-document.getElementById('pay-confirm-no').addEventListener('click',()=>showPayState('choose'));
+
+document.getElementById('toss-btn').addEventListener('click',async e=>{e.preventDefault();await commitDonation();resetModalForm();closeModal();showToast('감사합니다! 후원이 등록되었습니다. 🎉');window.location.href=buildTossLink(lastSubmitAmount);});
+document.getElementById('kakao-btn').addEventListener('click',async e=>{e.preventDefault();await commitDonation();resetModalForm();closeModal();showToast('감사합니다! 후원이 등록되었습니다. 🎉');window.open(KAKAO_PAY_LINK,'_blank');});
 document.getElementById('pay-done').addEventListener('click',()=>{pendingDonation=null;resetModalForm();closeModal();});
 
 // Admin add — with description + category

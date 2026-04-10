@@ -22,6 +22,28 @@
     line-height: 1.65; -webkit-font-smoothing: antialiased;
     padding-bottom: 80px; overflow-x: hidden;
   }
+
+  /* ── In-app browser banner ── */
+  .inapp-banner {
+    display: none; max-width: 640px; margin: 0 auto;
+    background: #fff8e1; border-bottom: 1px solid #ffe082;
+    padding: 14px 24px; font-size: 0.8rem; line-height: 1.6; color: #5d4037;
+  }
+  .inapp-banner.show { display: block; }
+  .inapp-banner strong { font-weight: 500; }
+  .inapp-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .inapp-btn {
+    font-family: 'Noto Sans KR', sans-serif; font-size: 0.75rem; font-weight: 400;
+    padding: 8px 14px; border: 1px solid #c9a94e; border-radius: 6px;
+    background: #fff; color: #5d4037; cursor: pointer; flex: 1; text-align: center;
+  }
+  .inapp-btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .inapp-dismiss {
+    font-family: 'Noto Sans KR', sans-serif; font-size: 0.68rem;
+    color: #a0855a; background: none; border: none; cursor: pointer;
+    margin-top: 8px; padding: 0;
+  }
+
   header { max-width: 640px; margin: 0 auto; padding: 48px 24px 32px; }
   header h1 { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.5; margin-bottom: 12px; }
   header p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
@@ -37,9 +59,7 @@
   .hero-bar-fill { height: 100%; background: var(--accent-soft); border-radius: 3px; transition: width 0.6s ease; }
   .hero-stats { display: flex; gap: 16px; font-size: 0.72rem; color: rgba(255,255,255,0.5); }
   .hero-stats strong { color: rgba(255,255,255,0.85); font-weight: 500; }
-
   .section { max-width: 640px; margin: 0 auto; padding: 28px 0; }
-
   .cat-strip { margin-bottom: 8px; position: relative; }
   .cat-header { display: flex; justify-content: space-between; align-items: center; padding: 0 24px; margin-bottom: 12px; }
   .cat-title { font-size: 0.9rem; font-weight: 500; }
@@ -52,14 +72,7 @@
   .cat-strip.scrolled-end::after { opacity: 0; }
   @keyframes scrollNudge { 0%{transform:translateX(0)} 35%{transform:translateX(-28px)} 55%{transform:translateX(6px)} 100%{transform:translateX(0)} }
   .cat-scroll.nudge { animation: scrollNudge 0.8s cubic-bezier(0.22,0.61,0.36,1) forwards; }
-
-  .h-card {
-    flex: 0 0 144px; min-width: 144px;
-    background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 13px 12px;
-    display: flex; flex-direction: column; justify-content: space-between;
-    cursor: pointer; -webkit-tap-highlight-color: transparent;
-    transition: border-color 0.2s, transform 0.15s; scroll-snap-align: start; position: relative;
-  }
+  .h-card { flex: 0 0 144px; min-width: 144px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 13px 12px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.2s, transform 0.15s; scroll-snap-align: start; position: relative; }
   .h-card:active { transform: scale(0.97); }
   .h-card .badge { position: absolute; top: 8px; right: 8px; font-size: 0.56rem; font-weight: 500; padding: 2px 6px; border-radius: 4px; line-height: 1.3; }
   .badge-almost { background: var(--accent-light); color: var(--accent); }
@@ -75,14 +88,12 @@
   .h-card .h-bar-fill.high { background: var(--green); }
   .h-card .h-pct { font-size: 0.6rem; color: var(--muted); line-height: 1; }
   .h-card .h-contribs { font-size: 0.58rem; color: var(--muted-light); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
   .all-toggle-wrap { padding: 0 24px; margin-bottom: 8px; }
   .all-toggle { font-family: 'Noto Sans KR', sans-serif; font-size: 0.78rem; font-weight: 400; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 6px; padding: 8px 0; width: 100%; cursor: pointer; }
   .all-grid-wrap { display: none; padding: 0 24px 12px; }
   .all-grid-wrap.open { display: block; }
   .all-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .all-grid .h-card { flex: none; min-width: 0; width: 100%; }
-
   .shareholders-section { max-width: 640px; margin: 0 auto; padding: 28px 24px; border-top: 1px solid var(--border); }
   .shareholders-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .shareholders-title { font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
@@ -96,8 +107,6 @@
   .feed-msg { font-size: 0.78rem; color: var(--muted); font-style: italic; margin-top: 2px; }
   .feed-hidden { display: none; }
   .feed-hidden.show { display: block; }
-
-  /* Detail modal */
   .detail-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 350; display: none; align-items: flex-end; justify-content: center; }
   .detail-overlay.open { display: flex; }
   .detail-sheet { background: var(--bg); width: 100%; max-width: 640px; border-radius: 16px 16px 0 0; padding: 28px 24px 36px; max-height: 72vh; overflow-y: auto; animation: slideUp 0.3s ease; }
@@ -115,66 +124,35 @@
   .detail-sheet .contrib-item { font-size: 0.72rem; color: var(--muted); }
   .detail-sheet .detail-close { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 400; padding: 12px 0; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--muted); cursor: pointer; margin-top: 8px; }
   .detail-sheet .detail-fund-btn { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 0.85rem; font-weight: 400; padding: 13px 0; border: none; border-radius: 6px; background: var(--fg); color: var(--bg); cursor: pointer; margin-top: 8px; }
-
-  /* Admin controls — fixed equal sizing */
   .detail-admin { display: none; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
   .admin-mode .detail-admin { display: flex; }
-  .detail-admin .admin-btn {
-    flex: 1; text-align: center;
-    font-family: 'Noto Sans KR', sans-serif; font-size: 0.78rem; font-weight: 400;
-    padding: 10px 0; border: 1px solid var(--border); border-radius: 6px;
-    background: var(--bg); color: var(--fg); cursor: pointer;
-  }
+  .detail-admin .admin-btn { flex: 1; text-align: center; font-family: 'Noto Sans KR', sans-serif; font-size: 0.78rem; font-weight: 400; padding: 10px 0; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--fg); cursor: pointer; }
   .detail-admin .admin-btn:hover { border-color: var(--fg); }
   .detail-admin .admin-btn.danger { color: var(--danger); border-color: var(--danger); }
   .detail-admin .admin-btn.danger:hover { background: var(--danger); color: #fff; }
   .detail-edit-area { margin-top: 0; }
   .edit-form { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
   .edit-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-
-  /* Generic admin-btn (for donation feed etc) */
-  .admin-btn {
-    font-family: 'Noto Sans KR', sans-serif; font-size: 0.75rem; font-weight: 400;
-    padding: 6px 14px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--bg); color: var(--fg); cursor: pointer;
-  }
+  .admin-btn { font-family: 'Noto Sans KR', sans-serif; font-size: 0.75rem; font-weight: 400; padding: 6px 14px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg); cursor: pointer; }
   .admin-btn:hover { border-color: var(--fg); }
   .admin-btn.danger { color: var(--danger); border-color: var(--danger); }
   .admin-btn.danger:hover { background: var(--danger); color: #fff; }
-  .edit-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-  .edit-input, .edit-select {
-    flex: 1 1 120px; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 300;
-    padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--bg); color: var(--fg); outline: none; -webkit-appearance: none;
-  }
+  .edit-input, .edit-select { flex: 1 1 120px; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 300; padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg); outline: none; -webkit-appearance: none; }
   .edit-select { cursor: pointer; }
-
-  /* Admin add form */
   .add-form { margin-top: 24px; padding: 0 24px; display: none; }
   .admin-mode .add-form { display: block; }
   .admin-btns { display: none; }
   .admin-mode .admin-btns { display: flex; }
   .form-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-  .input-field, .select-field {
-    flex: 1 1 140px; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 300;
-    padding: 10px 14px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--bg); color: var(--fg); outline: none; -webkit-appearance: none;
-  }
+  .input-field, .select-field { flex: 1 1 140px; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 300; padding: 10px 14px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg); outline: none; -webkit-appearance: none; }
   .input-field::placeholder { color: #bbb; }
   .select-field { cursor: pointer; }
-  .btn-dark {
-    font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 400;
-    padding: 10px 20px; border: 1px solid var(--fg); border-radius: 4px;
-    background: var(--fg); color: var(--bg); cursor: pointer; white-space: nowrap;
-  }
-
+  .btn-dark { font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem; font-weight: 400; padding: 10px 20px; border: 1px solid var(--fg); border-radius: 4px; background: var(--fg); color: var(--bg); cursor: pointer; white-space: nowrap; }
   .admin-banner { display: none; max-width: 640px; margin: 0 auto; padding: 10px 24px; background: var(--fg); color: var(--bg); font-size: 0.78rem; font-weight: 400; position: sticky; top: 0; z-index: 200; }
   .admin-banner.show { display: flex; justify-content: space-between; align-items: center; }
   .admin-banner button { font-family: 'Noto Sans KR', sans-serif; font-size: 0.72rem; padding: 4px 12px; border: 1px solid rgba(255,255,255,0.4); border-radius: 3px; background: transparent; color: var(--bg); cursor: pointer; }
-
   .sticky-bottom { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); padding: 14px 24px; display: flex; justify-content: center; z-index: 100; }
   .sticky-bottom button { font-family: 'Noto Sans KR', sans-serif; font-size: 0.88rem; font-weight: 500; width: 100%; max-width: 640px; padding: 14px 0; border: none; border-radius: 8px; background: var(--fg); color: var(--bg); cursor: pointer; }
-
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: none; align-items: flex-end; justify-content: center; }
   .modal-overlay.open { display: flex; }
   .modal-overlay.center { align-items: center; }
@@ -186,16 +164,13 @@
   .modal-close { background: none; border: none; font-size: 1.4rem; color: var(--muted); cursor: pointer; padding: 4px; line-height: 1; }
   .modal-field { margin-bottom: 18px; }
   .modal-field label { display: block; font-size: 0.78rem; font-weight: 400; color: var(--muted); margin-bottom: 6px; }
-  .modal-field input, .modal-field select, .modal-field textarea { width: 100%; min-width: 0; font-family: 'Noto Sans KR', sans-serif; font-size: 0.88rem; font-weight: 300; padding: 11px 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--fg); outline: none; -webkit-appearance: none; }
+  .modal-field input, .modal-field select, .modal-field textarea { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 0.88rem; font-weight: 300; padding: 11px 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--fg); outline: none; -webkit-appearance: none; }
   .modal-field input::placeholder, .modal-field textarea::placeholder { color: #bbb; }
   .modal-field textarea { resize: vertical; min-height: 60px; }
   .modal-field select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%23777' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
   .custom-gift-row { display: none; margin-top: 8px; }
   .custom-gift-row.show { display: block; }
-  .select-info {
-    display: none; margin-top: 10px; padding: 12px 14px;
-    background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border);
-  }
+  .select-info { display: none; margin-top: 10px; padding: 12px 14px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); }
   .select-info.show { display: block; }
   .select-info .si-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
   .select-info .si-funded { font-size: 0.82rem; font-weight: 400; }
@@ -222,10 +197,21 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   footer { max-width: 640px; margin: 0 auto; padding: 24px 24px 32px; text-align: center; font-size: 0.72rem; color: #ccc; }
   footer .admin-login-link { color: #ddd; cursor: pointer; text-decoration: none; }
-  footer .admin-login-link:hover { color: var(--muted); }
 </style>
 </head>
 <body>
+
+<!-- In-app browser warning -->
+<div class="inapp-banner" id="inapp-banner">
+  <strong>⚠️ 인앱 브라우저에서는 후원이 정상 등록되지 않을 수 있어요.</strong><br>
+  Safari나 Chrome에서 열어주세요!
+  <div class="inapp-actions">
+    <button class="inapp-btn primary" id="inapp-open-external">외부 브라우저로 열기</button>
+    <button class="inapp-btn" id="inapp-copy-url">링크 복사</button>
+  </div>
+  <button class="inapp-dismiss" id="inapp-dismiss">그냥 볼게요</button>
+</div>
+
 <div class="admin-banner" id="admin-banner"><span>🔧 관리자 모드</span><button id="admin-logout">로그아웃</button></div>
 <header>
   <h1>카카오 선물하기엔 제 취향이 없어서<br>직접 차렸습니다.</h1>
@@ -246,14 +232,7 @@
     <div style="font-size:0.72rem;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:12px;">위시리스트에 추가</div>
     <div class="form-row" style="margin-top:0;"><input type="text" id="add-name" class="input-field" placeholder="선물 이름"></div>
     <div class="form-row"><input type="text" id="add-desc" class="input-field" placeholder="설명 (선택)"></div>
-    <div class="form-row">
-      <input type="text" id="add-price" class="input-field" placeholder="금액 (원)" inputmode="numeric">
-      <select id="add-category" class="select-field">
-        <option value="🎸 굿즈/장비">🎸 굿즈/장비</option>
-        <option value="✈️ 여행">✈️ 여행</option>
-        <option value="🎁 기타">🎁 기타</option>
-      </select>
-    </div>
+    <div class="form-row"><input type="text" id="add-price" class="input-field" placeholder="금액 (원)" inputmode="numeric"><select id="add-category" class="select-field"><option value="🎸 굿즈/장비">🎸 굿즈/장비</option><option value="✈️ 여행">✈️ 여행</option><option value="🎁 기타">🎁 기타</option></select></div>
     <div class="form-row"><input type="text" id="add-link" class="input-field" placeholder="상품 링크 (선택)"></div>
     <div class="form-row"><button id="add-btn" class="btn-dark">추가</button></div>
   </div>
@@ -296,294 +275,187 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const SB_URL='https://envkejcboebwkiksostt.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVudmtlamNib2Vid2tpa3Nvc3R0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMDQ3NzksImV4cCI6MjA5MDc4MDc3OX0.QAg8dXMwXO5V3Qx4Dssb7t_ZK01Z9OvLNG0u9c6-_jU';
-const MASTER_PW='jkhjmh0410!';
-const ACCOUNT_FULL='토스뱅크 1000-1960-1144';
-const ACCOUNT_NO_CLEAN='100019601144';
-const KAKAO_PAY_LINK='https://qr.kakaopay.com/Ej8Gw498b';
+/* ═══ In-app browser detection ═══ */
+var IS_INAPP=(function(){var u=navigator.userAgent||'';return /KAKAOTALK|Instagram|FBAN|FBAV|NAVER|Line|DaumApps|everytime/i.test(u);})();
+var INAPP_TYPE=(function(){var u=navigator.userAgent||'';if(/KAKAOTALK/i.test(u))return'kakao';if(/Instagram/i.test(u))return'instagram';if(/FBAN|FBAV/i.test(u))return'facebook';if(/NAVER/i.test(u))return'naver';return'other';})();
 
-let isAdmin=false,wishlist=[],donations=[],feedExpanded=false;
+(function(){
+  if(!IS_INAPP)return;
+  document.getElementById('inapp-banner').classList.add('show');
 
-const CAT_LIST=[
+  document.getElementById('inapp-open-external').addEventListener('click',function(){
+    var url=location.href;
+    if(INAPP_TYPE==='kakao'){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(url);return;}
+    if(/iPhone|iPad/i.test(navigator.userAgent)){
+      location.href='x-safari-'+url;
+      setTimeout(function(){safeCopy(url);showToast('링크 복사됨! Safari에 붙여넣기 해주세요');},500);
+    }else{
+      try{location.href='intent://'+url.replace(/https?:\/\//,'')+'#Intent;scheme=https;package=com.android.chrome;end';}
+      catch(e){safeCopy(url);showToast('링크 복사됨! 브라우저에 붙여넣기 해주세요');}
+    }
+  });
+  document.getElementById('inapp-copy-url').addEventListener('click',function(){safeCopy(location.href);showToast('링크가 복사되었어요!');});
+  document.getElementById('inapp-dismiss').addEventListener('click',function(){document.getElementById('inapp-banner').classList.remove('show');});
+})();
+
+/* ═══ Safe clipboard (in-app browser 호환) ═══ */
+function safeCopy(text){
+  if(navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
+    try{navigator.clipboard.writeText(text).catch(function(){_fallbackCopy(text);});return;}catch(e){}
+  }
+  _fallbackCopy(text);
+}
+function _fallbackCopy(text){
+  var ta=document.createElement('textarea');ta.value=text;
+  ta.style.cssText='position:fixed;top:0;left:0;opacity:0;width:1px;height:1px;';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+}
+
+/* ═══ Config ═══ */
+var SB_URL='https://envkejcboebwkiksostt.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVudmtlamNib2Vid2tpa3Nvc3R0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMDQ3NzksImV4cCI6MjA5MDc4MDc3OX0.QAg8dXMwXO5V3Qx4Dssb7t_ZK01Z9OvLNG0u9c6-_jU';
+var MASTER_PW='jkhjmh0410!';
+var ACCOUNT_FULL='토스뱅크 1000-1960-1144';
+var ACCOUNT_NO_CLEAN='100019601144';
+var KAKAO_PAY_LINK='https://qr.kakaopay.com/Ej8Gw498b';
+
+var isAdmin=false,wishlist=[],donations=[],feedExpanded=false;
+var CAT_LIST=[
   {key:'🎸 굿즈/장비',emoji:'🎸',label:'굿즈/장비',kw:['실리카겔','t-shirt','티셔츠','굿즈','기타 피크','기타 줄','앨범','ep','정규','피크','스트링','kyo']},
   {key:'✈️ 여행',emoji:'✈️',label:'여행',kw:['온천','오페라','해리포터','뮤지컬','융프라우','피르스트','교통','소매치기','석회수','충전','고산병','컵라면','스위스','런던','부다페스트','빈','파리','밀라노','센강','유람선']},
   {key:'🎁 기타',emoji:'🎁',label:'기타',kw:[]}
 ];
+function categorize(item){if(item.category&&item.category!=='🎁 기타'){var v=CAT_LIST.find(function(c){return c.key===item.category;});if(v)return v.key;}var t=((item.name||'')+(item.description||'')).toLowerCase();for(var i=0;i<CAT_LIST.length;i++){var c=CAT_LIST[i];if(c.key==='🎁 기타')continue;if(c.kw.some(function(k){return t.includes(k.toLowerCase());}))return c.key;}return'🎁 기타';}
 
-// DB category 우선, 없으면 키워드 폴백
-function categorize(item){
-  if(item.category&&item.category!=='🎁 기타'){
-    const valid=CAT_LIST.find(c=>c.key===item.category);
-    if(valid)return valid.key;
-  }
-  const t=((item.name||'')+(item.description||'')).toLowerCase();
-  for(const c of CAT_LIST){if(c.key==='🎁 기타')continue;if(c.kw.some(k=>t.includes(k.toLowerCase())))return c.key;}
-  return '🎁 기타';
-}
-
-const hdr={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
-async function sb(t,m,p,b){const r=await fetch(SB_URL+'/rest/v1/'+t+(p||''),{method:m,headers:hdr,...(b?{body:JSON.stringify(b)}:{})});if(!r.ok)throw new Error(r.status);const x=await r.text();return x?JSON.parse(x):null;}
+var hdr={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+async function sb(t,m,p,b){var r=await fetch(SB_URL+'/rest/v1/'+t+(p||''),{method:m,headers:hdr,...(b?{body:JSON.stringify(b)}:{})});if(!r.ok)throw new Error(r.status);var x=await r.text();return x?JSON.parse(x):null;}
 async function loadWishlist(){wishlist=await sb('wishlist','GET','?order=sort_order.asc,id.asc');renderAll();populateSelect();}
 async function loadDonations(){donations=await sb('donations','GET','?order=created_at.desc');renderDonations();renderHero();}
 
 function fmt(n){return n.toLocaleString('ko-KR');}
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-function maskName(n){if(!n)return'';const c=n.trim();return c.length<=1?c:c[0]+'O'.repeat(c.length-1);}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2400);}
-function copyToClipboard(t){return navigator.clipboard.writeText(t).catch(()=>{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);});}
-function buildTossLink(a){let u='supertoss://send?bank='+encodeURIComponent('토스뱅크')+'&accountNo='+ACCOUNT_NO_CLEAN;if(a)u+='&amount='+a;return u+'&origin=qr';}
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function maskName(n){if(!n)return'';var c=n.trim();return c.length<=1?c:c[0]+'O'.repeat(c.length-1);}
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2400);}
+function buildTossLink(a){var u='supertoss://send?bank='+encodeURIComponent('토스뱅크')+'&accountNo='+ACCOUNT_NO_CLEAN;if(a)u+='&amount='+a;return u+'&origin=qr';}
 
-function renderHero(){
-  const tp=wishlist.reduce((s,w)=>s+(w.price||0),0);
-  const tf=wishlist.reduce((s,w)=>s+(w.funded||0),0);
-  const pct=tp>0?Math.min(100,Math.round(tf/tp*100)):0;
-  document.getElementById('hero-funded').textContent=fmt(tf);
-  document.getElementById('hero-total').textContent=fmt(tp);
-  document.getElementById('hero-bar-fill').style.width=pct+'%';
-  document.getElementById('hero-donors').textContent=new Set(donations.map(d=>d.name)).size;
-  document.getElementById('hero-items').textContent=wishlist.length;
-  document.getElementById('hero-done').textContent=wishlist.filter(w=>w.funded>=w.price&&w.price>0).length;
-}
+function renderHero(){var tp=wishlist.reduce(function(s,w){return s+(w.price||0);},0),tf=wishlist.reduce(function(s,w){return s+(w.funded||0);},0),pct=tp>0?Math.min(100,Math.round(tf/tp*100)):0;document.getElementById('hero-funded').textContent=fmt(tf);document.getElementById('hero-total').textContent=fmt(tp);document.getElementById('hero-bar-fill').style.width=pct+'%';document.getElementById('hero-donors').textContent=new Set(donations.map(function(d){return d.name;})).size;document.getElementById('hero-items').textContent=wishlist.length;document.getElementById('hero-done').textContent=wishlist.filter(function(w){return w.funded>=w.price&&w.price>0;}).length;}
 
-function buildCard(item,idx){
-  const pct=item.price>0?Math.round(item.funded/item.price*100):0;
-  const barW=Math.min(100,pct);
-  const done=item.funded>=item.price&&item.price>0;
-  const contribs=donations.filter(d=>d.gift===item.name);
-  const bc=pct>=80?'high':pct>=30?'mid':'low';
-  let badge='';
-  if(done)badge='<span class="badge badge-done">달성!</span>';
-  else if(pct>=70)badge='<span class="badge badge-almost">거의!</span>';
-  else if(contribs.length>=2)badge='<span class="badge badge-hot">🔥</span>';
-  return '<div class="h-card" onclick="openDetail('+idx+')">'+badge+
-    '<div class="h-name">'+esc(item.name)+'</div><div class="h-meta">'+
-    '<div class="h-price">'+(item.price>0?fmt(item.price)+'원':'-')+'</div>'+
-    (item.price>0?'<div class="h-bar"><div class="h-bar-fill '+bc+'" style="width:'+barW+'%"></div></div><div class="h-pct">'+(pct>0?fmt(item.funded)+'원 · '+pct+'%':'아직 후원 전')+'</div>':'')+
-    (contribs.length>0?'<div class="h-contribs">'+contribs.length+'명 참여</div>':'')+
-    '</div></div>';
-}
+function buildCard(item,idx){var pct=item.price>0?Math.round(item.funded/item.price*100):0,barW=Math.min(100,pct),done=item.funded>=item.price&&item.price>0,contribs=donations.filter(function(d){return d.gift===item.name;}),bc=pct>=80?'high':pct>=30?'mid':'low',badge='';if(done)badge='<span class="badge badge-done">달성!</span>';else if(pct>=70)badge='<span class="badge badge-almost">거의!</span>';else if(contribs.length>=2)badge='<span class="badge badge-hot">🔥</span>';return'<div class="h-card" onclick="openDetail('+idx+')">'+badge+'<div class="h-name">'+esc(item.name)+'</div><div class="h-meta"><div class="h-price">'+(item.price>0?fmt(item.price)+'원':'-')+'</div>'+(item.price>0?'<div class="h-bar"><div class="h-bar-fill '+bc+'" style="width:'+barW+'%"></div></div><div class="h-pct">'+(pct>0?fmt(item.funded)+'원 · '+pct+'%':'아직 후원 전')+'</div>':'')+(contribs.length>0?'<div class="h-contribs">'+contribs.length+'명 참여</div>':'')+'</div></div>';}
 
-// Smart sort: 거의달성 > 부분달성(저가순) > 미달성(저가순) > 달성완료
-function fundingScore(item){
-  if(!item.price||item.price<=0)return 5000000;
-  const pct=item.funded/item.price;
-  if(pct>=1)return 4000000+item.price;            // 달성완료 → 맨 뒤
-  if(pct>=0.7)return 1000000+(item.price-item.funded); // 거의 달성 → 맨 앞, 남은금액 적은순
-  if(pct>0)return 2000000+item.price;              // 부분 달성 → 중간, 저가순
-  return 3000000+item.price;                        // 미달성 → 그 다음, 저가순
-}
+function fundingScore(item){if(!item.price||item.price<=0)return 5000000;var pct=item.funded/item.price;if(pct>=1)return 4000000+item.price;if(pct>=0.7)return 1000000+(item.price-item.funded);if(pct>0)return 2000000+item.price;return 3000000+item.price;}
 
-function renderAll(){
-  const grouped={};CAT_LIST.forEach(c=>grouped[c.key]=[]);
-  wishlist.forEach((item,i)=>{grouped[categorize(item)].push({item,idx:i});});
+function renderAll(){var grouped={};CAT_LIST.forEach(function(c){grouped[c.key]=[];});wishlist.forEach(function(item,i){grouped[categorize(item)].push({item:item,idx:i});});Object.values(grouped).forEach(function(arr){arr.sort(function(a,b){return fundingScore(a.item)-fundingScore(b.item);});});document.getElementById('cat-strips').innerHTML=CAT_LIST.filter(function(c){return grouped[c.key].length>0;}).map(function(c){var items=grouped[c.key];return'<div class="cat-strip"><div class="cat-header"><span class="cat-title">'+c.emoji+' '+c.label+'<span class="cat-count">'+items.length+'</span></span>'+(items.length>2?'<span class="cat-hint">밀어서 더 보기 →</span>':'')+'</div><div class="cat-scroll">'+items.map(function(o){return buildCard(o.item,o.idx);}).join('')+'</div></div>';}).join('');var allSorted=wishlist.map(function(item,i){return{item:item,idx:i};}).sort(function(a,b){return fundingScore(a.item)-fundingScore(b.item);});document.getElementById('all-grid').innerHTML=allSorted.map(function(o){return buildCard(o.item,o.idx);}).join('');renderHero();initScrollHints();}
 
-  // sort within each category
-  Object.values(grouped).forEach(arr=>arr.sort((a,b)=>fundingScore(a.item)-fundingScore(b.item)));
+var nudgeDone=false;
+function initScrollHints(){document.querySelectorAll('.cat-strip').forEach(function(strip){var scroll=strip.querySelector('.cat-scroll'),hint=strip.querySelector('.cat-hint');if(!scroll)return;var isScrollable=scroll.scrollWidth>scroll.clientWidth+10;if(!isScrollable){strip.classList.add('scrolled-end');if(hint)hint.classList.add('hidden');return;}function checkEnd(){strip.classList.toggle('scrolled-end',scroll.scrollLeft+scroll.clientWidth>=scroll.scrollWidth-16);}checkEnd();var userScrolled=false;scroll.addEventListener('scroll',function(){checkEnd();if(!userScrolled&&hint){userScrolled=true;hint.classList.add('hidden');}},{passive:true});});if(!nudgeDone){nudgeDone=true;document.querySelectorAll('.cat-scroll').forEach(function(s,i){if(s.scrollWidth<=s.clientWidth+10)return;setTimeout(function(){s.classList.add('nudge');s.addEventListener('animationend',function(){s.classList.remove('nudge');},{once:true});},600+i*200);});}}
 
-  document.getElementById('cat-strips').innerHTML=CAT_LIST.filter(c=>grouped[c.key].length>0).map(c=>{
-    const items=grouped[c.key];
-    return '<div class="cat-strip"><div class="cat-header"><span class="cat-title">'+c.emoji+' '+c.label+'<span class="cat-count">'+items.length+'</span></span>'+(items.length>2?'<span class="cat-hint">밀어서 더 보기 →</span>':'')+'</div><div class="cat-scroll">'+items.map(o=>buildCard(o.item,o.idx)).join('')+'</div></div>';
-  }).join('');
+document.getElementById('all-toggle').addEventListener('click',function(){var w=document.getElementById('all-grid-wrap'),open=w.classList.toggle('open');this.textContent=open?'접기':'전체 보기';});
 
-  // all-grid도 동일 정렬
-  const allSorted=[...wishlist.map((item,i)=>({item,idx:i}))].sort((a,b)=>fundingScore(a.item)-fundingScore(b.item));
-  document.getElementById('all-grid').innerHTML=allSorted.map(o=>buildCard(o.item,o.idx)).join('');
-  renderHero();initScrollHints();
-}
-
-let nudgeDone=false;
-function initScrollHints(){
-  document.querySelectorAll('.cat-strip').forEach(strip=>{
-    const scroll=strip.querySelector('.cat-scroll'),hint=strip.querySelector('.cat-hint');
-    if(!scroll)return;
-    const isScrollable=scroll.scrollWidth>scroll.clientWidth+10;
-    if(!isScrollable){strip.classList.add('scrolled-end');if(hint)hint.classList.add('hidden');return;}
-    function checkEnd(){strip.classList.toggle('scrolled-end',scroll.scrollLeft+scroll.clientWidth>=scroll.scrollWidth-16);}
-    checkEnd();let userScrolled=false;
-    scroll.addEventListener('scroll',()=>{checkEnd();if(!userScrolled&&hint){userScrolled=true;hint.classList.add('hidden');}},{passive:true});
-  });
-  if(!nudgeDone){nudgeDone=true;document.querySelectorAll('.cat-scroll').forEach((s,i)=>{if(s.scrollWidth<=s.clientWidth+10)return;setTimeout(()=>{s.classList.add('nudge');s.addEventListener('animationend',()=>s.classList.remove('nudge'),{once:true});},600+i*200);});}
-}
-
-document.getElementById('all-toggle').addEventListener('click',function(){const w=document.getElementById('all-grid-wrap');const open=w.classList.toggle('open');this.textContent=open?'접기':'전체 보기';});
-
-// Detail modal
-const detailOverlay=document.getElementById('detail-overlay'),detailSheet=document.getElementById('detail-sheet');
-window.openDetail=function(i){
-  const item=wishlist[i];
-  const pct=item.price>0?Math.round(item.funded/item.price*100):0;
-  const barW=Math.min(100,pct);
-  const done=item.funded>=item.price&&item.price>0;
-  const contribs=donations.filter(d=>d.gift===item.name);
-  let ch='';if(contribs.length>0&&item.price>0){ch='<div class="contrib-section"><div class="contrib-list">'+contribs.map(c=>'<span class="contrib-item">'+(isAdmin?esc(c.name):esc(maskName(c.name)))+' '+Math.round(c.amount/item.price*100)+'%</span>').join('')+'</div></div>';}
-  const barColor=pct>=80?'var(--green)':pct>=30?'var(--accent-soft)':'var(--muted-light)';
-  detailSheet.innerHTML=
-    '<div class="detail-name">'+esc(item.name)+(done?'<span class="badge badge-done" style="position:static;">달성!</span>':'')+'</div>'+
-    (item.added_by?'<div class="detail-author">'+esc(item.added_by)+'님이 추가</div>':'')+
-    (item.description?'<div class="detail-desc">'+esc(item.description)+'</div>':'')+
-    '<div class="detail-price">'+(item.price>0?fmt(item.price)+'원':'-')+'</div>'+
-    (item.link?'<div class="detail-link"><a href="'+esc(item.link)+'" target="_blank" rel="noopener">상품 보기 →</a></div>':'')+
-    (item.funded>0?'<div class="funded-bar-wrap"><div class="funded-bar" style="width:'+barW+'%;background:'+barColor+'"></div></div><div class="funded-text">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원 ('+pct+'%)</div>':'')+ch+
-    '<div class="detail-edit-area" id="dea-'+i+'"></div>'+
-    '<div class="detail-admin" id="da-'+i+'"><button class="admin-btn" onclick="editWD('+i+')">수정</button><button class="admin-btn danger" onclick="delWD('+i+')">삭제</button></div>'+
-    (!done?'<button class="detail-fund-btn" onclick="closeDetail();openGiftModal('+i+')">이 아이템 후원하기</button>':'')+
-    '<button class="detail-close" onclick="closeDetail()">닫기</button>';
-  detailOverlay.classList.add('open');
-};
+/* ═══ Detail modal ═══ */
+var detailOverlay=document.getElementById('detail-overlay'),detailSheet=document.getElementById('detail-sheet');
+window.openDetail=function(i){var item=wishlist[i],pct=item.price>0?Math.round(item.funded/item.price*100):0,barW=Math.min(100,pct),done=item.funded>=item.price&&item.price>0,contribs=donations.filter(function(d){return d.gift===item.name;}),ch='';if(contribs.length>0&&item.price>0)ch='<div class="contrib-section"><div class="contrib-list">'+contribs.map(function(c){return'<span class="contrib-item">'+(isAdmin?esc(c.name):esc(maskName(c.name)))+' '+Math.round(c.amount/item.price*100)+'%</span>';}).join('')+'</div></div>';var barColor=pct>=80?'var(--green)':pct>=30?'var(--accent-soft)':'var(--muted-light)';detailSheet.innerHTML='<div class="detail-name">'+esc(item.name)+(done?'<span class="badge badge-done" style="position:static;">달성!</span>':'')+'</div>'+(item.added_by?'<div class="detail-author">'+esc(item.added_by)+'님이 추가</div>':'')+(item.description?'<div class="detail-desc">'+esc(item.description)+'</div>':'')+'<div class="detail-price">'+(item.price>0?fmt(item.price)+'원':'-')+'</div>'+(item.link?'<div class="detail-link"><a href="'+esc(item.link)+'" target="_blank" rel="noopener">상품 보기 →</a></div>':'')+(item.funded>0?'<div class="funded-bar-wrap"><div class="funded-bar" style="width:'+barW+'%;background:'+barColor+'"></div></div><div class="funded-text">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원 ('+pct+'%)</div>':'')+ch+'<div class="detail-edit-area" id="dea-'+i+'"></div><div class="detail-admin" id="da-'+i+'"><button class="admin-btn" onclick="editWD('+i+')">수정</button><button class="admin-btn danger" onclick="delWD('+i+')">삭제</button></div>'+(!done?'<button class="detail-fund-btn" onclick="closeDetail();openGiftModal('+i+')">이 아이템 후원하기</button>':'')+'<button class="detail-close" onclick="closeDetail()">닫기</button>';detailOverlay.classList.add('open');};
 function closeDetail(){detailOverlay.classList.remove('open');}
-detailOverlay.addEventListener('click',e=>{if(e.target===detailOverlay)closeDetail();});
+detailOverlay.addEventListener('click',function(e){if(e.target===detailOverlay)closeDetail();});
 
-// Edit wish in detail — with category dropdown
-window.editWD=function(i){
-  const item=wishlist[i];const el=document.getElementById('dea-'+i);
-  if(el.querySelector('.edit-form'))return;
-  const catOptions=CAT_LIST.map(c=>'<option value="'+c.key+'"'+(categorize(item)===c.key?' selected':'')+'>'+c.key+'</option>').join('');
-  const f=document.createElement('div');f.className='edit-form';
-  f.innerHTML='<div class="edit-row"><input class="edit-input" id="ew-n-'+i+'" value="'+esc(item.name)+'" placeholder="이름"></div>'+
-    '<div class="edit-row"><input class="edit-input" id="ew-d-'+i+'" value="'+esc(item.description)+'" placeholder="설명"></div>'+
-    '<div class="edit-row"><input class="edit-input" id="ew-p-'+i+'" value="'+item.price+'" placeholder="금액" inputmode="numeric"><select class="edit-select" id="ew-c-'+i+'">'+catOptions+'</select></div>'+
-    '<div class="edit-row"><input class="edit-input" id="ew-l-'+i+'" value="'+esc(item.link)+'" placeholder="링크"></div>'+
-    '<div class="edit-row"><input class="edit-input" id="ew-f-'+i+'" value="'+item.funded+'" placeholder="모인 금액" inputmode="numeric"></div>'+
-    '<div class="edit-row"><button class="admin-btn" onclick="saveWD('+i+')">저장</button><button class="admin-btn" onclick="openDetail('+i+')">취소</button></div>';
-  el.appendChild(f);
-};
-window.saveWD=async function(i){
-  const item=wishlist[i];
-  const u={name:document.getElementById('ew-n-'+i).value.trim()||item.name,description:document.getElementById('ew-d-'+i).value.trim(),price:parseInt(document.getElementById('ew-p-'+i).value.replace(/[^0-9]/g,''))||item.price,category:document.getElementById('ew-c-'+i).value,link:document.getElementById('ew-l-'+i).value.trim(),funded:parseInt(document.getElementById('ew-f-'+i).value.replace(/[^0-9]/g,''))||0};
-  try{await sb('wishlist','PATCH','?id=eq.'+item.id,u);Object.assign(item,u);renderAll();populateSelect();closeDetail();showToast('수정 완료');}catch(e){showToast('수정 실패');}
-};
-window.delWD=async function(i){
-  if(!confirm('"'+wishlist[i].name+'" 삭제?'))return;
-  try{await sb('wishlist','DELETE','?id=eq.'+wishlist[i].id);wishlist.splice(i,1);renderAll();populateSelect();closeDetail();showToast('삭제됨');}catch(e){showToast('삭제 실패');}
-};
+window.editWD=function(i){var item=wishlist[i],el=document.getElementById('dea-'+i);if(el.querySelector('.edit-form'))return;var catOpts=CAT_LIST.map(function(c){return'<option value="'+c.key+'"'+(categorize(item)===c.key?' selected':'')+'>'+c.key+'</option>';}).join('');var f=document.createElement('div');f.className='edit-form';f.innerHTML='<div class="edit-row"><input class="edit-input" id="ew-n-'+i+'" value="'+esc(item.name)+'" placeholder="이름"></div><div class="edit-row"><input class="edit-input" id="ew-d-'+i+'" value="'+esc(item.description)+'" placeholder="설명"></div><div class="edit-row"><input class="edit-input" id="ew-p-'+i+'" value="'+item.price+'" placeholder="금액" inputmode="numeric"><select class="edit-select" id="ew-c-'+i+'">'+catOpts+'</select></div><div class="edit-row"><input class="edit-input" id="ew-l-'+i+'" value="'+esc(item.link)+'" placeholder="링크"></div><div class="edit-row"><input class="edit-input" id="ew-f-'+i+'" value="'+item.funded+'" placeholder="모인 금액" inputmode="numeric"></div><div class="edit-row"><button class="admin-btn" onclick="saveWD('+i+')">저장</button><button class="admin-btn" onclick="openDetail('+i+')">취소</button></div>';el.appendChild(f);};
+window.saveWD=async function(i){var item=wishlist[i],u={name:document.getElementById('ew-n-'+i).value.trim()||item.name,description:document.getElementById('ew-d-'+i).value.trim(),price:parseInt(document.getElementById('ew-p-'+i).value.replace(/[^0-9]/g,''))||item.price,category:document.getElementById('ew-c-'+i).value,link:document.getElementById('ew-l-'+i).value.trim(),funded:parseInt(document.getElementById('ew-f-'+i).value.replace(/[^0-9]/g,''))||0};try{await sb('wishlist','PATCH','?id=eq.'+item.id,u);Object.assign(item,u);renderAll();populateSelect();closeDetail();showToast('수정 완료');}catch(e){showToast('수정 실패');}};
+window.delWD=async function(i){if(!confirm('"'+wishlist[i].name+'" 삭제?'))return;try{await sb('wishlist','DELETE','?id=eq.'+wishlist[i].id);wishlist.splice(i,1);renderAll();populateSelect();closeDetail();showToast('삭제됨');}catch(e){showToast('삭제 실패');}};
 
-// Donations
-const FEED_PREVIEW=3;
-function renderDonations(){
-  const c=document.getElementById('feed-container');
-  if(!donations.length){c.innerHTML='<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:0.82rem;">아직 후원 내역이 없습니다.</div>';return;}
-  c.innerHTML=donations.map((d,i)=>{
-    const h=!feedExpanded&&i>=FEED_PREVIEW?'feed-hidden':'';
-    const ah='<div class="admin-btns"><button class="admin-btn" onclick="editDon('+i+')">수정</button><button class="admin-btn danger" onclick="delDon('+i+')">삭제</button></div>';
-    return '<div class="feed-item '+h+'" id="don-'+i+'"><div class="feed-top"><span class="feed-name">'+(isAdmin?esc(d.name):esc(maskName(d.name)))+'</span><span class="feed-amount">'+fmt(d.amount)+'원</span></div>'+(d.gift?'<div class="feed-gift">→ '+esc(d.gift)+'</div>':'')+(d.link?'<div class="feed-gift"><a href="'+esc(d.link)+'" target="_blank" rel="noopener" style="color:var(--muted);font-size:0.72rem;">🔗 링크</a></div>':'')+(d.message?'<div class="feed-msg">"'+esc(d.message)+'"</div>':'')+ah+'</div>';
-  }).join('');
-  const eb=document.getElementById('shareholders-expand');
-  if(donations.length<=FEED_PREVIEW)eb.style.display='none';
-  else{eb.style.display='';eb.textContent=feedExpanded?'접기':'+'+(donations.length-FEED_PREVIEW)+'명 더 보기';}
-}
-document.getElementById('shareholders-expand').addEventListener('click',()=>{feedExpanded=!feedExpanded;document.querySelectorAll('.feed-hidden').forEach(el=>el.classList.toggle('show',feedExpanded));document.getElementById('shareholders-expand').textContent=feedExpanded?'접기':'+'+(donations.length-FEED_PREVIEW)+'명 더 보기';});
-
-window.editDon=function(i){const d=donations[i];const el=document.getElementById('don-'+i);if(el.querySelector('.edit-form'))return;const f=document.createElement('div');f.className='edit-form';f.innerHTML='<div class="edit-row"><input class="edit-input" id="ed-n-'+i+'" value="'+esc(d.name)+'" placeholder="이름"><input class="edit-input" id="ed-a-'+i+'" value="'+d.amount+'" placeholder="금액" inputmode="numeric"></div><div class="edit-row"><input class="edit-input" id="ed-g-'+i+'" value="'+esc(d.gift||'')+'" placeholder="선물"></div><div class="edit-row"><input class="edit-input" id="ed-l-'+i+'" value="'+esc(d.link||'')+'" placeholder="링크"></div><div class="edit-row"><input class="edit-input" id="ed-m-'+i+'" value="'+esc(d.message||'')+'" placeholder="메시지"></div><div class="edit-row"><button class="admin-btn" onclick="saveDon('+i+')">저장</button><button class="admin-btn" onclick="renderDonations()">취소</button></div>';el.appendChild(f);};
-window.saveDon=async function(i){const d=donations[i];const u={name:document.getElementById('ed-n-'+i).value.trim()||d.name,amount:parseInt(document.getElementById('ed-a-'+i).value.replace(/[^0-9]/g,''))||d.amount,gift:document.getElementById('ed-g-'+i).value.trim(),link:document.getElementById('ed-l-'+i).value.trim(),message:document.getElementById('ed-m-'+i).value.trim()};try{await sb('donations','PATCH','?id=eq.'+d.id,u);Object.assign(d,u);renderDonations();showToast('수정 완료');}catch(e){showToast('수정 실패');}};
+/* ═══ Donations ═══ */
+var FEED_PREVIEW=3;
+function renderDonations(){var c=document.getElementById('feed-container');if(!donations.length){c.innerHTML='<div style="text-align:center;padding:16px 0;color:var(--muted);font-size:0.82rem;">아직 후원 내역이 없습니다.</div>';return;}c.innerHTML=donations.map(function(d,i){var h=!feedExpanded&&i>=FEED_PREVIEW?'feed-hidden':'';var ah='<div class="admin-btns"><button class="admin-btn" onclick="editDon('+i+')">수정</button><button class="admin-btn danger" onclick="delDon('+i+')">삭제</button></div>';return'<div class="feed-item '+h+'" id="don-'+i+'"><div class="feed-top"><span class="feed-name">'+(isAdmin?esc(d.name):esc(maskName(d.name)))+'</span><span class="feed-amount">'+fmt(d.amount)+'원</span></div>'+(d.gift?'<div class="feed-gift">→ '+esc(d.gift)+'</div>':'')+(d.link?'<div class="feed-gift"><a href="'+esc(d.link)+'" target="_blank" rel="noopener" style="color:var(--muted);font-size:0.72rem;">🔗 링크</a></div>':'')+(d.message?'<div class="feed-msg">"'+esc(d.message)+'"</div>':'')+ah+'</div>';}).join('');var eb=document.getElementById('shareholders-expand');if(donations.length<=FEED_PREVIEW)eb.style.display='none';else{eb.style.display='';eb.textContent=feedExpanded?'접기':'+'+(donations.length-FEED_PREVIEW)+'명 더 보기';}}
+document.getElementById('shareholders-expand').addEventListener('click',function(){feedExpanded=!feedExpanded;document.querySelectorAll('.feed-hidden').forEach(function(el){el.classList.toggle('show',feedExpanded);});document.getElementById('shareholders-expand').textContent=feedExpanded?'접기':'+'+(donations.length-FEED_PREVIEW)+'명 더 보기';});
+window.editDon=function(i){var d=donations[i],el=document.getElementById('don-'+i);if(el.querySelector('.edit-form'))return;var f=document.createElement('div');f.className='edit-form';f.innerHTML='<div class="edit-row"><input class="edit-input" id="ed-n-'+i+'" value="'+esc(d.name)+'" placeholder="이름"><input class="edit-input" id="ed-a-'+i+'" value="'+d.amount+'" placeholder="금액" inputmode="numeric"></div><div class="edit-row"><input class="edit-input" id="ed-g-'+i+'" value="'+esc(d.gift||'')+'" placeholder="선물"></div><div class="edit-row"><input class="edit-input" id="ed-l-'+i+'" value="'+esc(d.link||'')+'" placeholder="링크"></div><div class="edit-row"><input class="edit-input" id="ed-m-'+i+'" value="'+esc(d.message||'')+'" placeholder="메시지"></div><div class="edit-row"><button class="admin-btn" onclick="saveDon('+i+')">저장</button><button class="admin-btn" onclick="renderDonations()">취소</button></div>';el.appendChild(f);};
+window.saveDon=async function(i){var d=donations[i],u={name:document.getElementById('ed-n-'+i).value.trim()||d.name,amount:parseInt(document.getElementById('ed-a-'+i).value.replace(/[^0-9]/g,''))||d.amount,gift:document.getElementById('ed-g-'+i).value.trim(),link:document.getElementById('ed-l-'+i).value.trim(),message:document.getElementById('ed-m-'+i).value.trim()};try{await sb('donations','PATCH','?id=eq.'+d.id,u);Object.assign(d,u);renderDonations();showToast('수정 완료');}catch(e){showToast('수정 실패');}};
 window.delDon=async function(i){if(!confirm(donations[i].name+' 후원 삭제?'))return;try{await sb('donations','DELETE','?id=eq.'+donations[i].id);donations.splice(i,1);renderDonations();renderHero();showToast('삭제됨');}catch(e){showToast('삭제 실패');}};
 
-// Admin
+/* ═══ Admin ═══ */
 function setAdminMode(on){isAdmin=on;document.body.classList.toggle('admin-mode',on);document.getElementById('admin-banner').classList.toggle('show',on);renderAll();renderDonations();}
-const loginOverlay=document.getElementById('login-overlay');
-document.getElementById('admin-trigger').addEventListener('click',()=>{if(isAdmin)return;loginOverlay.classList.add('open');document.getElementById('login-pw').value='';document.getElementById('login-error').classList.remove('show');setTimeout(()=>document.getElementById('login-pw').focus(),100);});
-document.getElementById('login-close').addEventListener('click',()=>loginOverlay.classList.remove('open'));
-loginOverlay.addEventListener('click',e=>{if(e.target===loginOverlay)loginOverlay.classList.remove('open');});
+var loginOverlay=document.getElementById('login-overlay');
+document.getElementById('admin-trigger').addEventListener('click',function(){if(isAdmin)return;loginOverlay.classList.add('open');document.getElementById('login-pw').value='';document.getElementById('login-error').classList.remove('show');setTimeout(function(){document.getElementById('login-pw').focus();},100);});
+document.getElementById('login-close').addEventListener('click',function(){loginOverlay.classList.remove('open');});
+loginOverlay.addEventListener('click',function(e){if(e.target===loginOverlay)loginOverlay.classList.remove('open');});
 document.getElementById('login-submit').addEventListener('click',tryLogin);
-document.getElementById('login-pw').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+document.getElementById('login-pw').addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
 function tryLogin(){if(document.getElementById('login-pw').value===MASTER_PW){loginOverlay.classList.remove('open');setAdminMode(true);showToast('관리자 모드 활성화');}else{document.getElementById('login-error').classList.add('show');}}
-document.getElementById('admin-logout').addEventListener('click',()=>{setAdminMode(false);showToast('관리자 모드 해제');});
+document.getElementById('admin-logout').addEventListener('click',function(){setAdminMode(false);showToast('관리자 모드 해제');});
 
-// Select
-function populateSelect(){const s=document.getElementById('gift-select');s.innerHTML='<option value="" disabled selected>아이템을 선택하세요</option>';wishlist.forEach((w,i)=>{const o=document.createElement('option');o.value=i;const pct=w.price>0?Math.round(w.funded/w.price*100):0;const done=w.funded>=w.price&&w.price>0;let label=w.name+' ('+fmt(w.price)+'원)';if(done)label='✅ '+label;else if(w.funded>0)label=label+' · '+pct+'% 달성';o.textContent=label;s.appendChild(o);});const c=document.createElement('option');c.value='__custom__';c.textContent='✎ 직접 입력';s.appendChild(c);}
+/* ═══ Select ═══ */
+function populateSelect(){var s=document.getElementById('gift-select');s.innerHTML='<option value="" disabled selected>아이템을 선택하세요</option>';wishlist.forEach(function(w,i){var o=document.createElement('option');o.value=i;var pct=w.price>0?Math.round(w.funded/w.price*100):0;var done=w.funded>=w.price&&w.price>0;var label=w.name+' ('+fmt(w.price)+'원)';if(done)label='✅ '+label;else if(w.funded>0)label=label+' · '+pct+'% 달성';o.textContent=label;s.appendChild(o);});var c=document.createElement('option');c.value='__custom__';c.textContent='✎ 직접 입력';s.appendChild(c);}
 
-// Gift modal
-const overlay=document.getElementById('modal-overlay');
-async function openGiftModal(pre){
-  try{await loadWishlist();await loadDonations();}catch(e){}
-  populateSelect();overlay.classList.add('open');document.body.style.overflow='hidden';
-  if(pre!==undefined&&pre>=0){document.getElementById('gift-select').value=pre;document.getElementById('custom-gift-row').classList.remove('show');updateSelectInfo(pre);}else{updateSelectInfo(-1);}
-}
+/* ═══ Gift modal ═══ */
+var overlay=document.getElementById('modal-overlay');
+async function openGiftModal(pre){try{await loadWishlist();await loadDonations();}catch(e){}populateSelect();overlay.classList.add('open');document.body.style.overflow='hidden';if(pre!==undefined&&pre>=0){document.getElementById('gift-select').value=pre;document.getElementById('custom-gift-row').classList.remove('show');updateSelectInfo(pre);}else{updateSelectInfo(-1);}}
 window.openGiftModal=openGiftModal;
-document.getElementById('gift-btn').addEventListener('click',()=>openGiftModal());
-function closeModal(){overlay.classList.remove('open');document.body.style.overflow='';document.getElementById('gift-submit').style.display='';document.getElementById('gift-submit').disabled=false;document.querySelectorAll('#modal-overlay .modal-field').forEach(el=>el.style.display='');document.getElementById('pay-step').classList.remove('show');document.getElementById('select-info').classList.remove('show');showPayState('choose');pendingDonation=null;}
+document.getElementById('gift-btn').addEventListener('click',function(){openGiftModal();});
+function closeModal(){overlay.classList.remove('open');document.body.style.overflow='';document.getElementById('gift-submit').style.display='';document.getElementById('gift-submit').disabled=false;document.querySelectorAll('#modal-overlay .modal-field').forEach(function(el){el.style.display='';});document.getElementById('pay-step').classList.remove('show');document.getElementById('select-info').classList.remove('show');showPayState('choose');pendingDonation=null;}
 document.getElementById('modal-close').addEventListener('click',closeModal);
-overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
-document.getElementById('gift-select').addEventListener('change',function(){
-  const cr=document.getElementById('custom-gift-row');
-  if(this.value==='__custom__'){cr.classList.add('show');document.getElementById('gift-custom').focus();updateSelectInfo(-1);}
-  else{cr.classList.remove('show');updateSelectInfo(parseInt(this.value));}
+overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
+document.getElementById('gift-select').addEventListener('change',function(){var cr=document.getElementById('custom-gift-row');if(this.value==='__custom__'){cr.classList.add('show');document.getElementById('gift-custom').focus();updateSelectInfo(-1);}else{cr.classList.remove('show');updateSelectInfo(parseInt(this.value));}});
+
+function updateSelectInfo(idx){var info=document.getElementById('select-info');if(idx<0||idx>=wishlist.length){info.classList.remove('show');return;}var item=wishlist[idx];if(!item.price||item.price<=0){info.classList.remove('show');return;}var pct=Math.round(item.funded/item.price*100),barW=Math.min(100,pct),done=item.funded>=item.price,remaining=Math.max(0,item.price-item.funded),barColor=pct>=80?'var(--green)':pct>=30?'var(--accent-soft)':'var(--muted-light)';info.classList.add('show');if(done)info.innerHTML='<div class="si-done">✅ 달성! ('+fmt(item.funded)+'원 / '+fmt(item.price)+'원 · '+pct+'%)</div>';else info.innerHTML='<div class="si-row"><span class="si-funded">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원</span><span class="si-pct">'+pct+'%</span></div><div class="si-bar"><div class="si-bar-fill" style="width:'+barW+'%;background:'+barColor+'"></div></div><div class="si-remaining">남은 금액: '+fmt(remaining)+'원</div>';}
+
+var lastSubmitAmount=0,pendingDonation=null;
+document.getElementById('gift-submit').addEventListener('click',function(){
+  var name=document.getElementById('gift-name').value.trim(),sel=document.getElementById('gift-select'),custom=document.getElementById('gift-custom').value.trim(),raw=document.getElementById('gift-amount').value.replace(/[^0-9]/g,''),linkVal=document.getElementById('gift-link').value.trim(),msg=document.getElementById('gift-msg').value.trim();
+  if(!name){showToast('이름을 입력해 주세요.');return;}if(!sel.value){showToast('아이템을 선택해 주세요.');return;}if(sel.value==='__custom__'&&!custom){showToast('선물 이름을 입력해 주세요.');return;}if(!raw||parseInt(raw)<=0){showToast('후원 금액을 입력해 주세요.');return;}
+  var amount=parseInt(raw);lastSubmitAmount=amount;var giftName,wishIdx=-1,customItemPrice=0;
+  if(sel.value==='__custom__'){giftName=custom;var cp=document.getElementById('gift-custom-price').value.replace(/[^0-9]/g,'');customItemPrice=cp?parseInt(cp):amount;}else{wishIdx=parseInt(sel.value);giftName=wishlist[wishIdx].name;}
+  pendingDonation={name:name,amount:amount,gift:giftName,message:msg,link:linkVal,wishIdx:wishIdx,customItemPrice:customItemPrice};
+  document.getElementById('gift-submit').style.display='none';document.querySelectorAll('#modal-overlay .modal-field').forEach(function(el){el.style.display='none';});document.getElementById('pay-step').classList.add('show');
 });
 
-function updateSelectInfo(idx){
-  const info=document.getElementById('select-info');
-  if(idx<0||idx>=wishlist.length){info.classList.remove('show');return;}
-  const item=wishlist[idx];
-  if(!item.price||item.price<=0){info.classList.remove('show');return;}
-  const pct=Math.round(item.funded/item.price*100);
-  const barW=Math.min(100,pct);
-  const done=item.funded>=item.price;
-  const remaining=Math.max(0,item.price-item.funded);
-  const barColor=pct>=80?'var(--green)':pct>=30?'var(--accent-soft)':'var(--muted-light)';
-  info.classList.add('show');
-  if(done){
-    info.innerHTML='<div class="si-done">✅ 달성! ('+fmt(item.funded)+'원 / '+fmt(item.price)+'원 · '+pct+'%)</div>';
-  }else{
-    info.innerHTML=
-      '<div class="si-row"><span class="si-funded">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원</span><span class="si-pct">'+pct+'%</span></div>'+
-      '<div class="si-bar"><div class="si-bar-fill" style="width:'+barW+'%;background:'+barColor+'"></div></div>'+
-      '<div class="si-remaining">남은 금액: '+fmt(remaining)+'원</div>';
-  }
+/* ═══ commitDonation — 안전하게 반환값 처리 ═══ */
+async function commitDonation(){
+  if(!pendingDonation)return false;var p=pendingDonation;
+  try{
+    if(p.wishIdx>=0){var fresh=await sb('wishlist','GET','?id=eq.'+wishlist[p.wishIdx].id);if(fresh&&fresh[0]&&fresh[0].funded>=fresh[0].price&&fresh[0].price>0){showToast('이 아이템은 이미 달성되었습니다!');pendingDonation=null;await loadWishlist();await loadDonations();return false;}}
+    await sb('donations','POST','',{name:p.name,amount:p.amount,gift:p.gift,message:p.message,link:p.link});
+    if(p.wishIdx>=0){var item=wishlist[p.wishIdx];await fetch(SB_URL+'/rest/v1/rpc/increment_funded',{method:'POST',headers:hdr,body:JSON.stringify({row_id:item.id,add_amount:p.amount})});if(p.link&&!item.link)await sb('wishlist','PATCH','?id=eq.'+item.id,{link:p.link});}
+    else{await sb('wishlist','POST','',{name:p.gift,description:'',price:p.customItemPrice||p.amount,link:p.link||'',funded:p.amount,added_by:p.name,category:'🎁 기타',sort_order:wishlist.length+1});}
+    pendingDonation=null;await loadWishlist();await loadDonations();return true;
+  }catch(e){console.error('commitDonation:',e);showToast('등록 실패: 다시 시도해주세요');return false;}
 }
 
-let lastSubmitAmount=0,pendingDonation=null;
-document.getElementById('gift-submit').addEventListener('click',()=>{
-  const name=document.getElementById('gift-name').value.trim(),sel=document.getElementById('gift-select'),custom=document.getElementById('gift-custom').value.trim(),raw=document.getElementById('gift-amount').value.replace(/[^0-9]/g,''),linkVal=document.getElementById('gift-link').value.trim(),msg=document.getElementById('gift-msg').value.trim();
-  if(!name){showToast('이름을 입력해 주세요.');return;}if(!sel.value){showToast('아이템을 선택해 주세요.');return;}if(sel.value==='__custom__'&&!custom){showToast('선물 이름을 입력해 주세요.');return;}if(!raw||parseInt(raw)<=0){showToast('후원 금액을 입력해 주세요.');return;}
-  const amount=parseInt(raw);lastSubmitAmount=amount;let giftName,wishIdx=-1,customItemPrice=0;
-  if(sel.value==='__custom__'){giftName=custom;const cp=document.getElementById('gift-custom-price').value.replace(/[^0-9]/g,'');customItemPrice=cp?parseInt(cp):amount;}else{wishIdx=parseInt(sel.value);giftName=wishlist[wishIdx].name;}
-  pendingDonation={name,amount,gift:giftName,message:msg,link:linkVal,wishIdx,customItemPrice};
-  document.getElementById('gift-submit').style.display='none';document.querySelectorAll('#modal-overlay .modal-field').forEach(el=>el.style.display='none');document.getElementById('pay-step').classList.add('show');
-});
-
-async function commitDonation(){if(!pendingDonation)return;const p=pendingDonation;try{
-  // 최신 데이터 확인 (동시 후원 방지)
-  if(p.wishIdx>=0){
-    const fresh=await sb('wishlist','GET','?id=eq.'+wishlist[p.wishIdx].id);
-    if(fresh&&fresh[0]){
-      const item=fresh[0];
-      if(item.funded>=item.price&&item.price>0){
-        showToast('이 아이템은 이미 달성되었습니다!');
-        pendingDonation=null;await loadWishlist();await loadDonations();return;
-      }
-    }
-  }
-  // 후원 기록 추가
-  await sb('donations','POST','',{name:p.name,amount:p.amount,gift:p.gift,message:p.message,link:p.link});
-  if(p.wishIdx>=0){
-    const item=wishlist[p.wishIdx];
-    // atomic increment via RPC
-    await fetch(SB_URL+'/rest/v1/rpc/increment_funded',{method:'POST',headers:hdr,body:JSON.stringify({row_id:item.id,add_amount:p.amount})});
-    if(p.link&&!item.link)await sb('wishlist','PATCH','?id=eq.'+item.id,{link:p.link});
-  }else{
-    await sb('wishlist','POST','',{name:p.gift,description:'',price:p.customItemPrice||p.amount,link:p.link||'',funded:p.amount,added_by:p.name,category:'🎁 기타',sort_order:wishlist.length+1});
-  }
-  pendingDonation=null;await loadWishlist();await loadDonations();
-}catch(e){showToast('등록 실패');}}
-
-function resetModalForm(){['gift-name','gift-custom','gift-custom-price','gift-amount','gift-link','gift-msg'].forEach(id=>document.getElementById(id).value='');document.getElementById('gift-select').selectedIndex=0;document.getElementById('custom-gift-row').classList.remove('show');document.getElementById('gift-submit').style.display='';document.getElementById('gift-submit').disabled=false;document.querySelectorAll('#modal-overlay .modal-field').forEach(el=>el.style.display='');document.getElementById('pay-step').classList.remove('show');showPayState('choose');}
+function resetModalForm(){['gift-name','gift-custom','gift-custom-price','gift-amount','gift-link','gift-msg'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('gift-select').selectedIndex=0;document.getElementById('custom-gift-row').classList.remove('show');document.getElementById('gift-submit').style.display='';document.getElementById('gift-submit').disabled=false;document.querySelectorAll('#modal-overlay .modal-field').forEach(function(el){el.style.display='';});document.getElementById('pay-step').classList.remove('show');showPayState('choose');}
 function showPayState(s){document.getElementById('pay-choose').style.display=s==='choose'?'':'none';document.getElementById('pay-waiting').style.display=s==='waiting'?'':'none';document.getElementById('pay-thankyou').style.display=s==='thankyou'?'':'none';document.getElementById('pay-done').style.display=s==='waiting'?'none':'';}
 
-document.getElementById('copy-acct-btn').addEventListener('click',async()=>{await copyToClipboard(ACCOUNT_FULL);await commitDonation();resetModalForm();closeModal();showToast('계좌 복사 완료! 후원이 등록되었습니다.');});
+/* ═══ Payment handlers — commit FIRST, then redirect ═══ */
 
-document.getElementById('toss-btn').addEventListener('click',async e=>{e.preventDefault();await commitDonation();resetModalForm();closeModal();showToast('감사합니다! 후원이 등록되었습니다. 🎉');window.location.href=buildTossLink(lastSubmitAmount);});
-document.getElementById('kakao-btn').addEventListener('click',async e=>{e.preventDefault();await commitDonation();resetModalForm();closeModal();showToast('감사합니다! 후원이 등록되었습니다. 🎉');window.open(KAKAO_PAY_LINK,'_blank');});
-document.getElementById('pay-done').addEventListener('click',()=>{pendingDonation=null;resetModalForm();closeModal();});
-
-// Admin add — with description + category
-document.getElementById('add-btn').addEventListener('click',async()=>{
-  const ni=document.getElementById('add-name'),di=document.getElementById('add-desc'),pi=document.getElementById('add-price'),ci=document.getElementById('add-category'),li=document.getElementById('add-link');
-  const name=ni.value.trim(),desc=di.value.trim(),pr=pi.value.replace(/[^0-9]/g,''),cat=ci.value,link=li.value.trim();
-  if(!name){showToast('선물 이름을 입력해 주세요.');return;}if(!pr||parseInt(pr)<=0){showToast('금액을 입력해 주세요.');return;}
-  try{await sb('wishlist','POST','',{name,description:desc,price:parseInt(pr),link:link||'',funded:0,added_by:'정경호',category:cat,sort_order:wishlist.length+1});await loadWishlist();showToast('"'+name+'" 추가됨!');ni.value='';di.value='';pi.value='';li.value='';}catch(e){showToast('추가 실패');}
+document.getElementById('copy-acct-btn').addEventListener('click',async function(){
+  safeCopy(ACCOUNT_FULL);
+  var ok=await commitDonation();
+  resetModalForm();closeModal();
+  showToast(ok?'계좌 복사 완료! 후원이 등록되었습니다.':'계좌가 복사되었어요.');
 });
 
-(async()=>{try{await Promise.all([loadWishlist(),loadDonations()]);}catch(e){document.getElementById('cat-strips').innerHTML='<div style="text-align:center;padding:40px 24px;color:var(--muted);font-size:0.85rem;">데이터를 불러올 수 없습니다.</div>';}})();
+document.getElementById('toss-btn').addEventListener('click',async function(e){
+  e.preventDefault();
+  var ok=await commitDonation();
+  resetModalForm();closeModal();
+  if(ok)showToast('후원 등록 완료!');
+  setTimeout(function(){
+    if(IS_INAPP){safeCopy(ACCOUNT_FULL);showToast('인앱이라 토스 연결이 안 될 수 있어요. 계좌가 복사되었습니다!');}
+    else{window.location.href=buildTossLink(lastSubmitAmount);}
+  },400);
+});
+
+document.getElementById('kakao-btn').addEventListener('click',async function(e){
+  e.preventDefault();
+  var ok=await commitDonation();
+  resetModalForm();closeModal();
+  if(ok)showToast('후원 등록 완료!');
+  setTimeout(function(){window.open(KAKAO_PAY_LINK,'_blank');},400);
+});
+
+document.getElementById('pay-done').addEventListener('click',function(){pendingDonation=null;resetModalForm();closeModal();});
+
+/* ═══ Admin add ═══ */
+document.getElementById('add-btn').addEventListener('click',async function(){var ni=document.getElementById('add-name'),di=document.getElementById('add-desc'),pi=document.getElementById('add-price'),ci=document.getElementById('add-category'),li=document.getElementById('add-link');var name=ni.value.trim(),desc=di.value.trim(),pr=pi.value.replace(/[^0-9]/g,''),cat=ci.value,link=li.value.trim();if(!name){showToast('선물 이름을 입력해 주세요.');return;}if(!pr||parseInt(pr)<=0){showToast('금액을 입력해 주세요.');return;}try{await sb('wishlist','POST','',{name:name,description:desc,price:parseInt(pr),link:link||'',funded:0,added_by:'정경호',category:cat,sort_order:wishlist.length+1});await loadWishlist();showToast('"'+name+'" 추가됨!');ni.value='';di.value='';pi.value='';li.value='';}catch(e){showToast('추가 실패');}});
+
+(async function(){try{await Promise.all([loadWishlist(),loadDonations()]);}catch(e){document.getElementById('cat-strips').innerHTML='<div style="text-align:center;padding:40px 24px;color:var(--muted);font-size:0.85rem;">데이터를 불러올 수 없습니다.</div>';}})();
 </script>
 </body>
 </html>

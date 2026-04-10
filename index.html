@@ -347,7 +347,8 @@ function renderHero(){
 }
 
 function buildCard(item,idx){
-  const pct=item.price>0?Math.min(100,Math.round(item.funded/item.price*100)):0;
+  const pct=item.price>0?Math.round(item.funded/item.price*100):0;
+  const barW=Math.min(100,pct);
   const done=item.funded>=item.price&&item.price>0;
   const contribs=donations.filter(d=>d.gift===item.name);
   const bc=pct>=80?'high':pct>=30?'mid':'low';
@@ -358,7 +359,7 @@ function buildCard(item,idx){
   return '<div class="h-card" onclick="openDetail('+idx+')">'+badge+
     '<div class="h-name">'+esc(item.name)+'</div><div class="h-meta">'+
     '<div class="h-price">'+(item.price>0?fmt(item.price)+'원':'-')+'</div>'+
-    (item.price>0?'<div class="h-bar"><div class="h-bar-fill '+bc+'" style="width:'+pct+'%"></div></div><div class="h-pct">'+(pct>0?fmt(item.funded)+'원 · '+pct+'%':'아직 후원 전')+'</div>':'')+
+    (item.price>0?'<div class="h-bar"><div class="h-bar-fill '+bc+'" style="width:'+barW+'%"></div></div><div class="h-pct">'+(pct>0?fmt(item.funded)+'원 · '+pct+'%':'아직 후원 전')+'</div>':'')+
     (contribs.length>0?'<div class="h-contribs">'+contribs.length+'명 참여</div>':'')+
     '</div></div>';
 }
@@ -411,7 +412,8 @@ document.getElementById('all-toggle').addEventListener('click',function(){const 
 const detailOverlay=document.getElementById('detail-overlay'),detailSheet=document.getElementById('detail-sheet');
 window.openDetail=function(i){
   const item=wishlist[i];
-  const pct=item.price>0?Math.min(100,Math.round(item.funded/item.price*100)):0;
+  const pct=item.price>0?Math.round(item.funded/item.price*100):0;
+  const barW=Math.min(100,pct);
   const done=item.funded>=item.price&&item.price>0;
   const contribs=donations.filter(d=>d.gift===item.name);
   let ch='';if(contribs.length>0&&item.price>0){ch='<div class="contrib-section"><div class="contrib-list">'+contribs.map(c=>'<span class="contrib-item">'+(isAdmin?esc(c.name):esc(maskName(c.name)))+' '+Math.round(c.amount/item.price*100)+'%</span>').join('')+'</div></div>';}
@@ -422,7 +424,7 @@ window.openDetail=function(i){
     (item.description?'<div class="detail-desc">'+esc(item.description)+'</div>':'')+
     '<div class="detail-price">'+(item.price>0?fmt(item.price)+'원':'-')+'</div>'+
     (item.link?'<div class="detail-link"><a href="'+esc(item.link)+'" target="_blank" rel="noopener">상품 보기 →</a></div>':'')+
-    (item.funded>0?'<div class="funded-bar-wrap"><div class="funded-bar" style="width:'+pct+'%;background:'+barColor+'"></div></div><div class="funded-text">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원 ('+pct+'%)</div>':'')+ch+
+    (item.funded>0?'<div class="funded-bar-wrap"><div class="funded-bar" style="width:'+barW+'%;background:'+barColor+'"></div></div><div class="funded-text">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원 ('+pct+'%)</div>':'')+ch+
     '<div class="detail-edit-area" id="dea-'+i+'"></div>'+
     '<div class="detail-admin" id="da-'+i+'"><button class="admin-btn" onclick="editWD('+i+')">수정</button><button class="admin-btn danger" onclick="delWD('+i+')">삭제</button></div>'+
     (!done?'<button class="detail-fund-btn" onclick="closeDetail();openGiftModal('+i+')">이 아이템 후원하기</button>':'')+
@@ -513,17 +515,18 @@ function updateSelectInfo(idx){
   if(idx<0||idx>=wishlist.length){info.classList.remove('show');return;}
   const item=wishlist[idx];
   if(!item.price||item.price<=0){info.classList.remove('show');return;}
-  const pct=Math.min(100,Math.round(item.funded/item.price*100));
+  const pct=Math.round(item.funded/item.price*100);
+  const barW=Math.min(100,pct);
   const done=item.funded>=item.price;
   const remaining=Math.max(0,item.price-item.funded);
   const barColor=pct>=80?'var(--green)':pct>=30?'var(--accent-soft)':'var(--muted-light)';
   info.classList.add('show');
   if(done){
-    info.innerHTML='<div class="si-done">✅ 이 아이템은 이미 달성되었습니다!</div>';
+    info.innerHTML='<div class="si-done">✅ 달성! ('+fmt(item.funded)+'원 / '+fmt(item.price)+'원 · '+pct+'%)</div>';
   }else{
     info.innerHTML=
       '<div class="si-row"><span class="si-funded">'+fmt(item.funded)+'원 / '+fmt(item.price)+'원</span><span class="si-pct">'+pct+'%</span></div>'+
-      '<div class="si-bar"><div class="si-bar-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div>'+
+      '<div class="si-bar"><div class="si-bar-fill" style="width:'+barW+'%;background:'+barColor+'"></div></div>'+
       '<div class="si-remaining">남은 금액: '+fmt(remaining)+'원</div>';
   }
 }

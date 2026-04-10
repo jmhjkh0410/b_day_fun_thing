@@ -475,7 +475,11 @@ function populateSelect(){const s=document.getElementById('gift-select');s.inner
 
 // Gift modal
 const overlay=document.getElementById('modal-overlay');
-function openGiftModal(pre){populateSelect();overlay.classList.add('open');document.body.style.overflow='hidden';if(pre!==undefined&&pre>=0){document.getElementById('gift-select').value=pre;document.getElementById('custom-gift-row').classList.remove('show');updateSelectInfo(pre);}else{updateSelectInfo(-1);}}
+async function openGiftModal(pre){
+  try{await loadWishlist();await loadDonations();}catch(e){}
+  populateSelect();overlay.classList.add('open');document.body.style.overflow='hidden';
+  if(pre!==undefined&&pre>=0){document.getElementById('gift-select').value=pre;document.getElementById('custom-gift-row').classList.remove('show');updateSelectInfo(pre);}else{updateSelectInfo(-1);}
+}
 window.openGiftModal=openGiftModal;
 document.getElementById('gift-btn').addEventListener('click',()=>openGiftModal());
 function closeModal(){overlay.classList.remove('open');document.body.style.overflow='';document.getElementById('gift-submit').style.display='';document.getElementById('gift-submit').disabled=false;document.querySelectorAll('#modal-overlay .modal-field').forEach(el=>el.style.display='');document.getElementById('pay-step').classList.remove('show');document.getElementById('select-info').classList.remove('show');showPayState('choose');pendingDonation=null;}
@@ -517,7 +521,30 @@ document.getElementById('gift-submit').addEventListener('click',()=>{
   document.getElementById('gift-submit').style.display='none';document.querySelectorAll('#modal-overlay .modal-field').forEach(el=>el.style.display='none');document.getElementById('pay-step').classList.add('show');
 });
 
-async function commitDonation(){if(!pendingDonation)return;const p=pendingDonation;try{await sb('donations','POST','',{name:p.name,amount:p.amount,gift:p.gift,message:p.message,link:p.link});if(p.wishIdx>=0){const item=wishlist[p.wishIdx];await sb('wishlist','PATCH','?id=eq.'+item.id,{funded:item.funded+p.amount});if(p.link&&!item.link)await sb('wishlist','PATCH','?id=eq.'+item.id,{link:p.link});}else{await sb('wishlist','POST','',{name:p.gift,description:'',price:p.customItemPrice||p.amount,link:p.link||'',funded:p.amount,added_by:p.name,category:'🎁 기타',sort_order:wishlist.length+1});}pendingDonation=null;await loadWishlist();await loadDonations();}catch(e){showToast('등록 실패');}}
+async function commitDonation(){if(!pendingDonation)return;const p=pendingDonation;try{
+  // 최신 데이터 확인 (동시 후원 방지)
+  if(p.wishIdx>=0){
+    const fresh=await sb('wishlist','GET','?id=eq.'+wishlist[p.wishIdx].id);
+    if(fresh&&fresh[0]){
+      const item=fresh[0];
+      if(item.funded>=item.price&&item.price>0){
+        showToast('이 아이템은 이미 달성되었습니다!');
+        pendingDonation=null;await loadWishlist();await loadDonations();return;
+      }
+    }
+  }
+  // 후원 기록 추가
+  await sb('donations','POST','',{name:p.name,amount:p.amount,gift:p.gift,message:p.message,link:p.link});
+  if(p.wishIdx>=0){
+    const item=wishlist[p.wishIdx];
+    // atomic increment via RPC
+    await fetch(SB_URL+'/rest/v1/rpc/increment_funded',{method:'POST',headers:hdr,body:JSON.stringify({row_id:item.id,add_amount:p.amount})});
+    if(p.link&&!item.link)await sb('wishlist','PATCH','?id=eq.'+item.id,{link:p.link});
+  }else{
+    await sb('wishlist','POST','',{name:p.gift,description:'',price:p.customItemPrice||p.amount,link:p.link||'',funded:p.amount,added_by:p.name,category:'🎁 기타',sort_order:wishlist.length+1});
+  }
+  pendingDonation=null;await loadWishlist();await loadDonations();
+}catch(e){showToast('등록 실패');}}
 
 function resetModalForm(){['gift-name','gift-custom','gift-custom-price','gift-amount','gift-link','gift-msg'].forEach(id=>document.getElementById(id).value='');document.getElementById('gift-select').selectedIndex=0;document.getElementById('custom-gift-row').classList.remove('show');document.getElementById('gift-submit').style.display='';document.getElementById('gift-submit').disabled=false;document.querySelectorAll('#modal-overlay .modal-field').forEach(el=>el.style.display='');document.getElementById('pay-step').classList.remove('show');showPayState('choose');}
 function showPayState(s){document.getElementById('pay-choose').style.display=s==='choose'?'':'none';document.getElementById('pay-waiting').style.display=s==='waiting'?'':'none';document.getElementById('pay-thankyou').style.display=s==='thankyou'?'':'none';document.getElementById('pay-done').style.display=s==='waiting'?'none':'';}

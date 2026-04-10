@@ -229,7 +229,7 @@
 <div class="admin-banner" id="admin-banner"><span>🔧 관리자 모드</span><button id="admin-logout">로그아웃</button></div>
 <header>
   <h1>카카오 선물하기엔 제 취향이 없어서<br>직접 차렸습니다.</h1>
-  <p>생일 전에 사버린 밴드 굿즈, 기타 장비, 유럽 여행 티켓 등<br>이리저리 넣어봤습니다. 편하게 지분만 보태주십쇼.</p>
+  <p>카카오 선물하기만 30분 동안 보다가 현타와서 만들어봤습니다.<br>생일 전에 사버린 밴드 굿즈, 기타 장비, 유럽 여행 티켓 등<br>이리저리 넣어봤습니다. 편하게 지분만 보태주십쇼.</p>
 </header>
 <div class="funding-hero"><div class="hero-card">
   <div class="hero-label">Birthday Fund</div>
@@ -363,14 +363,31 @@ function buildCard(item,idx){
     '</div></div>';
 }
 
+// Smart sort: 거의달성 > 저가미달성 > 고가미달성 > 달성완료
+function fundingScore(item){
+  if(!item.price||item.price<=0)return 900;
+  const pct=item.funded/item.price;
+  if(pct>=1)return 800; // completed → bottom
+  if(pct>=0.7)return 100+Math.round((item.price-item.funded)); // nearly there → top, by remaining asc
+  if(pct>0)return 200+item.price; // partially funded, by price asc
+  return 300+item.price; // unfunded, by price asc
+}
+
 function renderAll(){
   const grouped={};CAT_LIST.forEach(c=>grouped[c.key]=[]);
   wishlist.forEach((item,i)=>{grouped[categorize(item)].push({item,idx:i});});
+
+  // sort within each category
+  Object.values(grouped).forEach(arr=>arr.sort((a,b)=>fundingScore(a.item)-fundingScore(b.item)));
+
   document.getElementById('cat-strips').innerHTML=CAT_LIST.filter(c=>grouped[c.key].length>0).map(c=>{
     const items=grouped[c.key];
     return '<div class="cat-strip"><div class="cat-header"><span class="cat-title">'+c.emoji+' '+c.label+'<span class="cat-count">'+items.length+'</span></span>'+(items.length>2?'<span class="cat-hint">밀어서 더 보기 →</span>':'')+'</div><div class="cat-scroll">'+items.map(o=>buildCard(o.item,o.idx)).join('')+'</div></div>';
   }).join('');
-  document.getElementById('all-grid').innerHTML=wishlist.map((item,i)=>buildCard(item,i)).join('');
+
+  // all-grid도 동일 정렬
+  const allSorted=[...wishlist.map((item,i)=>({item,idx:i}))].sort((a,b)=>fundingScore(a.item)-fundingScore(b.item));
+  document.getElementById('all-grid').innerHTML=allSorted.map(o=>buildCard(o.item,o.idx)).join('');
   renderHero();initScrollHints();
 }
 
@@ -397,7 +414,7 @@ window.openDetail=function(i){
   const pct=item.price>0?Math.min(100,Math.round(item.funded/item.price*100)):0;
   const done=item.funded>=item.price&&item.price>0;
   const contribs=donations.filter(d=>d.gift===item.name);
-  let ch='';if(contribs.length>0&&item.price>0)ch='<div class="contrib-section"><div class="contrib-list">'+contribs.map(c=>'<span class="contrib-item">'+(isAdmin?esc(c.name):esc(maskName(c.name)))+' '+Math.round(c.amount/item.price*100)+'%</span>').join('')+'</div></div>';
+  let ch='';if(contribs.length>0&&item.price>0){ch='<div class="contrib-section"><div class="contrib-list">'+contribs.map(c=>'<span class="contrib-item">'+(isAdmin?esc(c.name):esc(maskName(c.name)))+' '+Math.round(c.amount/item.price*100)+'%</span>').join('')+'</div></div>';}
   const barColor=pct>=80?'var(--green)':pct>=30?'var(--accent-soft)':'var(--muted-light)';
   detailSheet.innerHTML=
     '<div class="detail-name">'+esc(item.name)+(done?'<span class="badge badge-done" style="position:static;">달성!</span>':'')+'</div>'+
